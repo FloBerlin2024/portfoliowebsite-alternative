@@ -5,7 +5,7 @@ const projectsData = [
     title: 'E-Commerce Plattform',
     description: 'Full-Stack Online-Shop mit React, Node.js und PostgreSQL. Produktkatalog, Warenkorb und Stripe-Zahlungsintegration inklusive.',
     tech: ['React', 'Node.js'],
-    image: './assets/images/project1.jpg',
+    image: './src/assets/images/Projekt1.jpg',
     link: 'https://example.com/project1'
   },
   {
@@ -13,7 +13,7 @@ const projectsData = [
     title: 'Aufgabenverwaltung',
     description: 'Kollaboratives Task-Management-Tool mit Vue.js und Firebase. Echtzeit-Updates, Benutzerauthentifizierung und Team-Funktionen.',
     tech: ['Vue.js', 'Firebase'],
-    image: './assets/images/project2.jpg',
+    image: './src/assets/images/Projekt2.jpg',
     link: 'https://example.com/project2'
   },
   {
@@ -21,7 +21,7 @@ const projectsData = [
     title: 'Analytics Dashboard',
     description: 'Datenvisualisierungs-Dashboard mit D3.js und Express.js-Backend. Echtzeit-Kennzahlen, Charts und individuelle Berichte.',
     tech: ['D3.js', 'Express'],
-    image: './assets/images/project3.jpg',
+    image: './src/assets/images/Projekt3.jpg',
     link: 'https://example.com/project3'
   },
   {
@@ -29,16 +29,8 @@ const projectsData = [
     title: 'Wetter-App',
     description: 'Progressive Web App zur Wettervorhersage. Nutzt die OpenWeather API, Service Worker für Offline-Unterstützung und responsives Design.',
     tech: ['PWA', 'API'],
-    image: './assets/images/project4.jpg',
+    image: './src/assets/images/Projekt4.jpg',
     link: 'https://example.com/project4'
-  },
-  {
-    id: 5,
-    title: 'Blog Plattform',
-    description: 'Markdown-basierter Blog mit serverseitigem Rendering. Gebaut mit Next.js, mit Kommentaren, Kategorien und SEO-Optimierung.',
-    tech: ['Next.js', 'SSR'],
-    image: './assets/images/project5.jpg',
-    link: 'https://example.com/project5'
   }
 ]
 

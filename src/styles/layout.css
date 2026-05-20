@@ -97,24 +97,27 @@
 
   .hero-inner {
     grid-template-columns: 1fr clamp(300px, 44vw, 520px);
+    grid-template-areas: "text image";
     padding: 0 var(--spacing-xl);
     gap: var(--spacing-xl);
     align-items: center;
   }
 
   .hero-text {
+    grid-area: text;
     text-align: left;
     padding: 0;
   }
 
-  #hero h1 {
-    font-size: clamp(2.4rem, 5.5vw, 5rem);
-  }
-
   .hero-image {
+    grid-area: image;
     width: 100%;
     max-width: 520px;
     margin: 0 auto;
+  }
+
+  #hero h1 {
+    font-size: clamp(2.4rem, 5.5vw, 5rem);
   }
 
   .hero-desc {
@@ -128,12 +131,20 @@
   }
 }
 
+/* Wide screens: lock columns, text left — image right */
+@media (min-width: 1200px) {
+  .hero-inner {
+    grid-template-columns: 1fr 520px;
+    max-width: 1400px;
+  }
+}
+
 /* Hero Word Animation */
 .hero-animate {
   display: inline-block;
   overflow: hidden;
   vertical-align: top;
-  height: 1em;
+  height: 1.15em;
 }
 
 .hero-animate-track {

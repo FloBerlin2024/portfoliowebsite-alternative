@@ -13,8 +13,7 @@
 }
 
 .nav-inner {
-  max-width: 1100px;
-  margin: 0 auto;
+  width: 100%;
   padding: 0 var(--spacing-md);
   height: 100%;
   display: flex;
@@ -38,6 +37,7 @@
 .nav-links {
   display: flex;
   gap: var(--spacing-lg);
+  margin-left: auto;
 }
 
 .nav-links a {
@@ -219,7 +219,7 @@
 
 @media (min-width: 768px) {
   .nav-inner {
-    padding: 0 var(--spacing-lg);
+    padding: 0 var(--spacing-xl);
   }
 
   .nav-links {
@@ -366,6 +366,13 @@
   min-height: 260px;
   display: flex;
   flex-direction: column;
+}
+
+.service-icon {
+  width: 56px;
+  height: 56px;
+  object-fit: contain;
+  margin-bottom: 16px;
 }
 
 .service-card::before {
@@ -529,10 +536,13 @@
 @media (min-width: 768px) {
   .featured-project {
     grid-template-columns: 1fr 1fr;
+    min-height: 360px;
   }
 
   .featured-project-image {
-    aspect-ratio: 4/3;
+    aspect-ratio: unset;
+    height: 100%;
+    min-height: 360px;
   }
 
   .featured-project-text {
