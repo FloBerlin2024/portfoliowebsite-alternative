@@ -3,40 +3,46 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Florian Matthias — Lehrer für Geografie & Ethik aus Brandenburg. Digitale Bildung, kritisches Denken und eigene Web-Projekte für den Schulalltag.">
+  <meta name="theme-color" content="#2A2A2A">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23FF9019'/%3E%3Ctext x='16' y='23' text-anchor='middle' font-family='sans-serif' font-size='19' font-weight='900' fill='%232A2A2A'%3EF.%3C/text%3E%3C/svg%3E">
+
+  <!-- Open Graph / Twitter — og:url fehlt bewusst, sobald die Seite eine feste Domain hat hier eintragen -->
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Florian Matthias">
+  <meta property="og:title" content="Florian Matthias — Lehrer für Geografie & Ethik">
+  <meta property="og:description" content="Digitale Bildung, kritisches Denken und eigene Web-Projekte für den Schulalltag — aus Brandenburg.">
+  <meta property="og:image" content="/og-image.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:locale" content="de_DE">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Florian Matthias — Lehrer für Geografie & Ethik">
+  <meta name="twitter:description" content="Digitale Bildung, kritisches Denken und eigene Web-Projekte für den Schulalltag — aus Brandenburg.">
+  <meta name="twitter:image" content="/og-image.jpg">
+
   <title>Florian Matthias — Lehrer für Geografie & Ethik</title>
   <link rel="stylesheet" href="./src/styles/main.css">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Person",
+    "name": "Florian Matthias",
+    "jobTitle": "Lehrer für Geografie & Ethik",
+    "description": "Lehrer für Geografie & Ethik aus Brandenburg mit Fokus auf digitale Bildung und kritisches Denken.",
+    "address": {
+      "@type": "PostalAddress",
+      "addressRegion": "Brandenburg",
+      "addressCountry": "DE"
+    },
+    "knowsAbout": ["Geografie", "Ethik", "Digitale Bildung", "Webentwicklung"]
+  }
+  </script>
 </head>
 <body>
 
-  <!-- Ticker Banner -->
-  <div class="ticker" aria-hidden="true">
-    <div class="ticker-track">
-      <span>Jetzt mit Kaffeegeschmack</span>
-      <span class="ticker-dot">☕</span>
-      <span>Jetzt mit Kaffeegeschmack</span>
-      <span class="ticker-dot">☕</span>
-      <span>Jetzt mit Kaffeegeschmack</span>
-      <span class="ticker-dot">☕</span>
-      <span>Jetzt mit Kaffeegeschmack</span>
-      <span class="ticker-dot">☕</span>
-      <span>Jetzt mit Kaffeegeschmack</span>
-      <span class="ticker-dot">☕</span>
-      <span>Jetzt mit Kaffeegeschmack</span>
-      <span class="ticker-dot">☕</span>
-      <span>Jetzt mit Kaffeegeschmack</span>
-      <span class="ticker-dot">☕</span>
-      <span>Jetzt mit Kaffeegeschmack</span>
-      <span class="ticker-dot">☕</span>
-      <span>Jetzt mit Kaffeegeschmack</span>
-      <span class="ticker-dot">☕</span>
-      <span>Jetzt mit Kaffeegeschmack</span>
-      <span class="ticker-dot">☕</span>
-      <span>Jetzt mit Kaffeegeschmack</span>
-      <span class="ticker-dot">☕</span>
-      <span>Jetzt mit Kaffeegeschmack</span>
-      <span class="ticker-dot">☕</span>
-    </div>
-  </div>
+  <a href="#main" class="skip-link">Zum Inhalt springen</a>
 
   <!-- Navigation -->
   <nav id="nav">
@@ -47,7 +53,7 @@
         <a href="#about">Über mich</a>
         <a href="#contact">Kontakt</a>
       </div>
-      <button class="nav-hamburger" aria-label="Menü öffnen" aria-expanded="false">
+      <button class="nav-hamburger" aria-label="Menü öffnen" aria-expanded="false" aria-controls="nav-mobile-menu">
         <span></span><span></span><span></span>
       </button>
     </div>
@@ -63,7 +69,7 @@
   <!-- Mobile Backdrop -->
   <div class="nav-backdrop" id="nav-backdrop"></div>
 
-  <div class="page-cards">
+  <main class="page-cards" id="main">
 
   <!-- Hero Section -->
   <div class="hero-card-wrap">
@@ -80,8 +86,12 @@
         <div class="hero-image">
           <img
             src="./src/assets/images/collage.png"
+            srcset="./src/assets/images/collage-480.png 480w, ./src/assets/images/collage-700.png 700w, ./src/assets/images/collage.png 1040w"
+            sizes="(min-width: 1200px) 520px, (min-width: 768px) 44vw, 80vw"
             alt="Florian Matthias"
             class="hero-photo-img"
+            width="1040" height="1040"
+            fetchpriority="high"
           >
         </div>
       </div>
@@ -90,21 +100,22 @@
 
   <!-- Service Cards Row -->
   <div class="section-card-wrap" id="about">
+    <h2 class="sr-only">Meine Schwerpunkte</h2>
     <div class="services-grid">
-      <div class="service-card service-card--yellow">
-        <img src="src/assets/images/Erde.png" alt="" class="service-icon" aria-hidden="true">
+      <div class="service-card service-card--yellow" data-reveal>
+        <img src="src/assets/images/Erde.png" alt="" class="service-icon" loading="lazy" decoding="async" aria-hidden="true">
         <h3>Geografie & Erdkunde</h3>
         <p>Vom lokalen Raum bis zur globalen Vernetzung — ich mache Geografie greifbar, aktuell und relevant für die Lebenswelt meiner Schülerinnen und Schüler.</p>
         <a href="#contact" class="service-link">Kontakt aufnehmen →</a>
       </div>
-      <div class="service-card service-card--green">
-        <img src="src/assets/images/Philo.png" alt="" class="service-icon" aria-hidden="true">
+      <div class="service-card service-card--green" data-reveal>
+        <img src="src/assets/images/Philo.png" alt="" class="service-icon" loading="lazy" decoding="async" aria-hidden="true">
         <h3>Ethik & Philosophie</h3>
         <p>Kritisches Denken, Wertediskussion und ethische Urteilsbildung — ich begleite junge Menschen beim Finden ihrer eigenen Haltung in einer komplexen Welt.</p>
         <a href="#contact" class="service-link">Kontakt aufnehmen →</a>
       </div>
-      <div class="service-card service-card--pink">
-        <img src="src/assets/images/Digital.png" alt="" class="service-icon" aria-hidden="true">
+      <div class="service-card service-card--pink" data-reveal>
+        <img src="src/assets/images/Digital.png" alt="" class="service-icon" loading="lazy" decoding="async" aria-hidden="true">
         <h3>Digitale Bildung</h3>
         <p>KI, digitale Tools und moderne Lernmethoden im Unterricht — ich bringe Technikbegeisterung in den Klassenraum und mache digitale Kompetenz erfahrbar.</p>
         <a href="#contact" class="service-link">Kontakt aufnehmen →</a>
@@ -113,9 +124,16 @@
   </div>
 
   <!-- Projects -->
-  <div class="section-card-wrap" id="projects">
+  <div class="section-card-wrap projects-intro" id="projects">
+    <div class="projects-intro-inner" data-reveal>
+      <p class="section-eyebrow">Projekte</p>
+      <h2>Was ich nebenbei baue.</h2>
+      <p class="projects-intro-desc">Kleine Web-Tools, die im Schulalltag entstanden sind — und ein Design, das dabei gleich mit.</p>
+    </div>
+  </div>
+  <div class="section-card-wrap">
     <div class="featured-projects" id="projects-container">
-      <!-- Projects rendered by JS -->
+      <!-- Projekte werden von projects.js gerendert -->
     </div>
   </div>
 
@@ -123,7 +141,7 @@
   <div class="section-card-wrap">
   <section id="contact">
     <div class="container">
-      <div class="contact-grid">
+      <div class="contact-grid" data-reveal>
         <div class="contact-info">
           <h2>Schreib mir<br>eine Nachricht.</h2>
           <p>Ob Austausch mit Kolleginnen und Kollegen, Rückfragen oder Kooperationsideen — ich freue mich über Nachrichten. Ich antworte innerhalb von 2–3 Werktagen.</p>
@@ -149,7 +167,7 @@
             <div class="form-footer">
               <button type="submit" class="btn btn-primary form-submit">Nachricht senden</button>
             </div>
-            <div id="form-message"></div>
+            <div id="form-message" aria-live="polite"></div>
           </form>
         </div>
       </div>
@@ -168,7 +186,7 @@
   </footer>
   </div>
 
-  </div><!-- /page-cards -->
+  </main><!-- /page-cards -->
 
   <!-- Back to Top -->
   <button class="back-to-top" id="back-to-top" aria-label="Nach oben scrollen">

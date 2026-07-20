@@ -48,6 +48,4 @@ export function initNav() {
       closeMenu()
     }
   })
-
-  console.log('✓ Nav initialized')
 }

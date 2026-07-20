@@ -192,11 +192,90 @@
   .services-grid {
     grid-template-columns: repeat(3, 1fr);
   }
+
+  /* Reveal-Stagger: Karten laufen leicht versetzt ein */
+  .services-grid .service-card:nth-child(2) { --reveal-delay: 0.1s; }
+  .services-grid .service-card:nth-child(3) { --reveal-delay: 0.2s; }
+}
+
+/* ============================================================
+   SCROLL REVEAL
+   ============================================================ */
+
+/* Nur verstecken, wenn JS läuft (html.js) — sonst bleibt alles sichtbar */
+html.js [data-reveal] {
+  opacity: 0;
+  transform: translateY(24px);
+  transition:
+    opacity 0.6s ease var(--reveal-delay, 0s),
+    transform 0.7s cubic-bezier(0.22, 1, 0.36, 1) var(--reveal-delay, 0s);
+}
+
+html.js [data-reveal].is-revealed {
+  opacity: 1;
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html.js [data-reveal] {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+
+  .hero-animate-track {
+    animation: none;
+  }
+
+  html {
+    scroll-behavior: auto;
+  }
 }
 
 /* ============================================================
    PROJECTS SECTION — Mobile First
    ============================================================ */
+
+.projects-intro {
+  background-color: var(--color-white);
+}
+
+.projects-intro-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: var(--spacing-xl) var(--spacing-md);
+}
+
+.section-eyebrow {
+  display: inline-block;
+  font-size: var(--font-size-xs);
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  background-color: var(--color-warm-orange);
+  border: var(--border-width) solid var(--color-anthrazite);
+  border-radius: var(--radius);
+  padding: 0.25rem 0.6rem;
+  box-shadow: var(--shadow-sm);
+  margin-bottom: var(--spacing-md);
+}
+
+.projects-intro-inner h2 {
+  margin-bottom: var(--spacing-sm);
+}
+
+.projects-intro-desc {
+  opacity: 0.68;
+  font-size: var(--font-size-sm);
+  max-width: 52ch;
+  margin-bottom: 0;
+}
+
+@media (min-width: 768px) {
+  .projects-intro-inner {
+    padding: var(--spacing-2xl) var(--spacing-xl) var(--spacing-xl);
+  }
+}
 
 .featured-projects {
   display: flex;
@@ -301,14 +380,14 @@ footer {
 
 .footer-copy {
   color: var(--color-cream);
-  opacity: 0.45;
+  opacity: 0.65;
   font-size: var(--font-size-sm);
   margin-bottom: 0;
 }
 
 .footer-right {
   color: var(--color-cream);
-  opacity: 0.35;
+  opacity: 0.65;
   font-size: var(--font-size-xs);
 }
 

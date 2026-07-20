@@ -61,34 +61,6 @@
   transform: translate(-1px, -1px);
 }
 
-.nav-cta {
-  display: none;
-}
-
-@media (min-width: 768px) {
-  .nav-cta {
-    display: inline-flex;
-    align-items: center;
-    background-color: var(--color-card-yellow);
-    color: var(--color-anthrazite) !important;
-    border: var(--border-width) solid var(--color-anthrazite);
-    border-radius: 999px;
-    padding: 0.4em 1.2em;
-    font-weight: 800;
-    font-size: 0.85rem;
-    letter-spacing: 0.05em;
-    text-transform: uppercase;
-    text-decoration: none;
-    transition: background-color var(--transition), transform var(--transition);
-    white-space: nowrap;
-  }
-
-  .nav-cta:hover {
-    background-color: var(--color-warm-orange);
-    transform: translateY(-1px);
-  }
-}
-
 /* Hamburger button — visible only below 768px */
 .nav-hamburger {
   display: none;
@@ -232,47 +204,6 @@
 }
 
 /* ============================================================
-   TICKER BANNER
-   ============================================================ */
-
-.ticker {
-  display: none;
-  background-color: var(--color-warm-orange);
-  border-bottom: var(--border-width) solid var(--color-anthrazite);
-  overflow: hidden;
-  white-space: nowrap;
-  padding: 0.65rem 0;
-}
-
-.ticker-track {
-  display: inline-flex;
-  align-items: center;
-  gap: 2.5rem;
-  animation: ticker-scroll 30s linear infinite;
-  will-change: transform;
-}
-
-.ticker-track span {
-  color: var(--color-anthrazite);
-  font-size: 0.7rem;
-  font-weight: 800;
-  text-transform: uppercase;
-  letter-spacing: 0.12em;
-}
-
-.ticker-dot {
-  color: var(--color-anthrazite);
-  opacity: 0.4;
-  font-size: 0.5rem !important;
-  letter-spacing: 0 !important;
-}
-
-@keyframes ticker-scroll {
-  0%   { transform: translateX(0); }
-  100% { transform: translateX(-50%); }
-}
-
-/* ============================================================
    BUTTONS
    ============================================================ */
 
@@ -341,6 +272,13 @@
   font-weight: 800;
   letter-spacing: 0.04em;
   box-shadow: var(--shadow-md);
+  /* --magnetic-x/-y werden per JS (cursorEffects.js) gesetzt */
+  transform: translate(var(--magnetic-x, 0px), var(--magnetic-y, 0px));
+  transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow var(--transition), background-color var(--transition);
+}
+
+.btn-hero-contact:hover {
+  transform: translate(var(--magnetic-x, 0px), calc(var(--magnetic-y, 0px) - 3px));
 }
 
 @media (min-width: 768px) {
@@ -483,7 +421,8 @@
   background-color: var(--color-light-border);
 }
 
-.featured-project-image img {
+.featured-project-image img,
+.featured-project-image svg {
   width: 100%;
   height: 100%;
   object-fit: cover;
@@ -491,7 +430,8 @@
   transition: transform 0.4s ease;
 }
 
-.featured-project:hover .featured-project-image img {
+.featured-project:hover .featured-project-image img,
+.featured-project:hover .featured-project-image svg {
   transform: scale(1.02);
 }
 
@@ -695,59 +635,90 @@
   }
 }
 
-/* Badge sticker */
-.hero-badge {
-  position: absolute;
-  width: 110px;
-  height: 110px;
-  background-color: var(--color-card-yellow);
+/* ============================================================
+   FORM MESSAGES
+   ============================================================ */
+
+.message {
+  display: inline-block;
+  padding: 0.5rem 0.9rem;
   border: var(--border-width) solid var(--color-anthrazite);
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  bottom: 12%;
-  left: 5%;
+  border-radius: var(--radius);
   box-shadow: var(--shadow-sm);
-  cursor: pointer;
-  transition: transform var(--transition);
 }
 
-.hero-badge:hover {
-  transform: rotate(15deg) scale(1.05);
+.message.success {
+  background-color: var(--color-card-green);
 }
 
-.hero-badge-ring {
+.message.error {
+  background-color: var(--color-card-pink);
+}
+
+/* ============================================================
+   CUSTOM CURSOR — nur bei Maus-Nutzung (cursorEffects.js)
+   ============================================================ */
+
+/* Äußeres Element: reine Positions-Verfolgung, JS setzt hier nur translate(x,y) — kein
+   CSS-transition auf transform, sonst hinkt der Cursor der Maus sichtbar hinterher. */
+.custom-cursor {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+  z-index: 300;
+  opacity: 0;
+  transition: opacity 0.15s ease;
+}
+
+/* Sichtbare Form lebt in ::before — hier darf transform (Drehung) frei animieren */
+.custom-cursor::before {
+  content: '';
   position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  animation: badge-spin 10s linear infinite;
+  top: 0;
+  left: 0;
+  width: 14px;
+  height: 14px;
+  background-color: var(--color-warm-orange);
+  border: 2px solid var(--color-anthrazite);
+  border-radius: 0;
+  transform: translate(-50%, -50%) rotate(45deg);
+  transition: width 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), height 0.25s cubic-bezier(0.34, 1.56, 0.64, 1),
+              border-radius 0.25s ease, background-color 0.2s ease, transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
-.hero-badge-ring text {
-  font-size: 13px;
-  font-weight: 700;
-  fill: var(--color-anthrazite);
-  text-transform: uppercase;
-  letter-spacing: 1px;
+.custom-cursor.is-hidden {
+  opacity: 0;
 }
 
-.hero-badge-arrow {
-  font-size: 1.5rem;
-  font-weight: 900;
-  color: var(--color-anthrazite);
-  position: relative;
-  z-index: 1;
+/* Erst nach dem ersten mousemove sichtbar (verhindert Sprung von 0,0 beim Laden) */
+.custom-cursor.is-visible {
+  opacity: 1;
 }
 
-@keyframes badge-spin {
-  from { transform: rotate(0deg); }
-  to   { transform: rotate(360deg); }
+/* Über interaktiven Elementen: dreht sich ein und schrumpft zum Punkt */
+.custom-cursor.is-active::before {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: var(--color-anthrazite);
+  transform: translate(-50%, -50%) rotate(0deg);
 }
 
-@media (max-width: 767px) {
-  .hero-badge {
-    display: none;
-  }
+.custom-cursor.is-down::before {
+  width: 10px;
+  height: 10px;
+}
+
+/* Systemcursor ausblenden, außer bei Texteingaben */
+body.custom-cursor-active,
+body.custom-cursor-active * {
+  cursor: none;
+}
+
+body.custom-cursor-active input,
+body.custom-cursor-active textarea {
+  cursor: text;
 }

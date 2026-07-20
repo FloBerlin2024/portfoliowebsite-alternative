@@ -28,19 +28,19 @@ Design-Referenz: [kristi.digital](https://kristi.digital) — Neobrutalism-Stil.
 ```
 index.html                  # Haupt-HTML, alle Sections
 src/
-  main.js                   # App-Init, importiert alle Komponenten
+  main.js                   # App-Init, setzt html.js-Klasse, importiert alle Komponenten
   components/
     nav.js                  # Hamburger-Menü, mobiles Overlay, dynamische Top-Position
-    hero.js                 # Hero Section Init
-    about.js                # About/Services Init
-    projects.js             # Projekt-Daten + DOM-Rendering
+    projects.js             # Projekt-Daten + DOM-Rendering + Inline-SVG-Visuals
     contact.js              # Kontaktformular + Formspree
+    reveal.js               # Scroll-Reveal via IntersectionObserver ([data-reveal])
+    backToTop.js            # Back-to-top Button
   styles/
     main.css                # Importiert alle CSS-Dateien
     variables.css           # Design Tokens (Farben, Spacing, Shadows)
     base.css                # Reset, Typography, .container
     layout.css              # Section-Layouts (Hero, About, Projects, Contact, Footer)
-    components.css          # UI-Komponenten (Nav, Ticker, Buttons, Cards, Forms, Back-to-top)
+    components.css          # UI-Komponenten (Nav, Buttons, Cards, Forms, Back-to-top)
   assets/
     images/                 # Projektbilder + Profilfoto (florian.png)
 ```
@@ -71,14 +71,13 @@ Alle Tokens in `src/styles/variables.css`.
 
 ### Section-Backgrounds (von oben nach unten)
 ```
-Ticker       → warm-orange
-Nav          → cream (sticky)
-Hero         → cream
-About        → white
-Projects H2  → white
-Proj. Rows   → cream (.featured-projects)
-Contact      → white
-Footer       → anthrazite (dunkel)
+Nav             → cream (sticky, floating Card)
+Hero            → hero-gradient (cream → lavender)
+Services        → card-yellow / card-green / card-pink
+Projects-Intro  → white
+Proj. Rows      → cream (.featured-projects)
+Contact         → white
+Footer          → anthrazite (dunkel)
 ```
 → **Keine Trennlinien** zwischen Sections — Farbwechsel erzeugt Trennung.
 
@@ -99,22 +98,23 @@ Footer       → anthrazite (dunkel)
 - **Beschreibung Mobile**: kein `max-width`, volle Container-Breite
 - **Beschreibung Desktop**: `clamp(0.85rem, 1.4vw, 1rem)`, `max-width: 38ch`
 - **Bild-Spalte** (≥768px): `clamp(300px, 44vw, 520px)` — schrumpft langsamer als Textspalte → Bild bleibt proportional groß
-- **Bild-Container**: `aspect-ratio: 1`, `object-fit: contain` — Collage.png ist 2510×2510, füllt Box vollständig ohne Crop
+- **Bild-Container**: `aspect-ratio: 1`, `object-fit: contain` — collage.png ist 1040×1040 (auf Web-Größe optimiert), füllt Box vollständig ohne Crop
 
 ### Navigation (`nav.js` + CSS)
 - Desktop (≥768px): Logo links, Links rechts — Hover = Orange-Fill von rechts nach links, Schrift weiß + letter-spacing größer
 - Mobile (<768px): Hamburger-Button (3 Striche → X-Animation mit CSS), Mobile-Overlay-Panel
-- Overlay: `position: fixed`, Top-Position wird **dynamisch per JS** gesetzt (`nav.getBoundingClientRect().bottom`) — passt sich an, ob Ticker sichtbar ist oder gescrollt wurde
-
-### Ticker (HTML + CSS)
-- Ganz oben auf der Seite, **über** der Nav
-- 12× wiederholter Text für nahtlose Endlosschleife (`translateX(-50%)`)
-- Orange Hintergrund (`--color-warm-orange`), 2px Border unten
+- Overlay: `position: fixed`, Top-Position wird **dynamisch per JS** gesetzt (`nav.getBoundingClientRect().bottom`)
 
 ### Projekte (`projects.js`)
-- Daten als Array in der Datei — **hier echte Projekte eintragen**
+- Vier echte Projekte: **TGS Rechner**, **Generatorenwebsite**, **Widgetdock** (Electron-App „cmt" aus `WORKSPACE/Widgetdock`), **Eigenes Design**
+- Jedes Projekt hat ein Inline-SVG-Visual im Neobrutalism-Stil; `image`-Feld (Pfad) überschreibt das SVG — dort echte Screenshots eintragen
+- `link` leer = kein "Projekt ansehen"-Button; URL eintragen, sobald vorhanden
 - Alternierend links/rechts auf Desktop (`nth-child(even)` → Bild rechts)
-- Placeholder-SVG wenn kein Bild vorhanden (`onerror` Handler)
+
+### Scroll-Reveal (`reveal.js`)
+- Elemente mit `[data-reveal]` faden beim ersten Sichtbarwerden ein (IntersectionObserver)
+- Versteckt wird nur bei laufendem JS (`html.js`-Klasse aus `main.js`) — ohne JS bleibt alles sichtbar
+- Respektiert `prefers-reduced-motion`; Stagger via `--reveal-delay` (Service-Cards)
 
 ### Kontaktformular (`contact.js`)
 - Formspree-Integration → **`YOUR_FORM_ID` ersetzen**
@@ -125,22 +125,45 @@ Footer       → anthrazite (dunkel)
 - Royal Blue, Neobrutalism-Stil, 42px × 42px (Mobile) / 48px × 48px (Desktop)
 - Sanftes Ein-/Ausblenden via CSS opacity + transform
 
+### SEO & Social Sharing
+- Open-Graph- + Twitter-Meta-Tags in `index.html` (`og:title`, `og:image`, …) — `og:image` zeigt auf `/og-image.jpg` (liegt in `public/`, **nicht** in `src/assets/` — Vite verarbeitet `<meta content>`-Pfade nicht, nur `public/` wird 1:1 in den Build kopiert)
+- `og:url` ist bewusst leer — sobald die Seite eine feste Domain hat, hier + als `<link rel="canonical">` eintragen
+- JSON-LD (`Person`-Schema) im `<head>` für Rich-Snippets
+- `public/robots.txt` erlaubt vollständiges Crawling; kein `sitemap.xml`, solange keine Domain feststeht
+
+### Barrierefreiheit
+- Skip-Link (`.skip-link` in `base.css`) springt zu `id="main"` auf dem `<main class="page-cards">`-Wrapper
+- Globaler `:focus-visible`-Ring (Warm-Orange-Outline) auf allen interaktiven Elementen, `.nav-links a` hat einen eigenen Border+Shadow-Fokus statt des globalen Rings
+- `<h2 class="sr-only">` vor dem Services-Grid, damit die Heading-Hierarchie nicht von h1 direkt zu h3 springt
+- Geprüft mit axe-core (0 Violations) und Lighthouse (Accessibility 100)
+
+### Signature-Effekt: Custom Cursor + Magnetic Button (`cursorEffects.js`)
+- Nur bei `pointer: fine` (echte Maus) und ohne `prefers-reduced-motion` — auf Touch/Mobile inaktiv, kein Overhead
+- Custom Cursor: orange Raute (45°-Quadrat, hart, kein Blur) folgt dem Mauszeiger; wächst zum dunklen Quadrat über interaktiven Elementen (`a, button, input, textarea, [role="button"]`); Systemcursor wird per `body.custom-cursor-active` ausgeblendet, außer bei Texteingaben
+- Magnetic Button: nur der Hero-CTA (`.btn-hero-contact`) — zieht sich im 70px-Radius zum Cursor (max. 14px Versatz) via CSS-Custom-Properties `--magnetic-x`/`--magnetic-y`, kombiniert mit dem bestehenden Hover-Lift
+- Bewusst auf ein Element beschränkt (nicht alle Buttons) — ein Signature-Moment, keine Dauerbelastung
+
+### Responsive Bilder
+- Hero-Foto (`collage.png`) und alle Projekt-Mockups (`rechner-*.jpg`, `generator-*.jpg`, `dock-*.jpg`) haben `srcset`/`sizes` für 480–1920px-Breakpoints
+- Bilder in JS-Dateien (z. B. `projects.js`) **müssen** als ES-Modul-Imports eingebunden werden (`import x from '../assets/images/x.jpg'`), nicht als reine String-Pfade — sonst kopiert Vite sie beim Build nicht mit und sie 404en in Produktion
+- Service-Icons (`Erde.png`, `Philo.png`, `Digital.png`) sind auf 160px begrenzt (werden bei 56px angezeigt) — beim Ersetzen nicht wieder auf 1000px+ Rohgröße hochladen
+- Letzter Lighthouse-Mobile-Audit (Production-Build via `vite preview`): Performance 92, Accessibility 100, Best Practices 100, SEO 100
+
 ---
 
 ## Offene TODOs (vor Go-Live)
 
 1. **E-Mail** in `index.html` ersetzen: `florian@example.com` → echte Adresse
 2. **Formspree** einrichten: `src/components/contact.js` → `YOUR_FORM_ID` ersetzen
-3. **Projektbilder** in `src/assets/images/` ablegen: `project1.jpg` bis `project5.jpg`
-4. **Projektdaten** in `src/components/projects.js` mit echten Projekten befüllen
-5. **Profilfoto**: Aktuell `florian.png` — ggf. durch hexagonales PNG ersetzen
+3. **Projekt-Links** in `src/components/projects.js` eintragen (`link`-Feld), sobald die Projekte online sind
+4. **Optional:** echte Screenshots statt SVG-Visuals (`image`-Feld in `projects.js`)
 
 ---
 
 ## Wichtige Entscheidungen
 
 - **Kein Cookie-Banner nötig** — kein Analytics, keine Ads, keine externen Fonts via CDN. Sobald Analytics eingebunden wird → Klaro (Open Source) empfohlen oder Matomo (DSGVO-konform ohne Banner)
-- **Google Fonts**: Aktuell über CDN geladen → für DSGVO-Konformität self-hosten
+- **Keine Google Fonts geladen**: `--font-family` nennt 'Inter' nur als Wunsch-Font in der Stack-Liste, es gibt aber keinen CDN-Link im HTML — die Seite läuft auf System-Fonts. Kein DSGVO-Risiko hier, aber falls 'Inter' doch geladen werden soll: self-hosten, nicht per CDN-Link
 - **Kein Framework**: Bewusste Entscheidung für Vanilla JS — einfacher zu warten, kein Dependency-Risiko
 - **Mobile-first CSS**: Alle Styles beginnen mit Mobile, Desktop via `min-width` Media Queries
 

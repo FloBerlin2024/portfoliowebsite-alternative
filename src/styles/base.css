@@ -67,6 +67,44 @@ section {
   border: 0;
 }
 
+/* Sichtbarer Fokus-Ring für Tastatur-Navigation — konsistent über alle interaktiven Elemente */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+textarea:focus-visible {
+  outline: 3px solid var(--color-warm-orange);
+  outline-offset: 3px;
+  border-radius: var(--radius);
+}
+
+/* Nav-Links haben ihren eigenen Border+Shadow-Fokusindikator — kein doppelter Ring */
+.nav-links a:focus-visible {
+  outline: none;
+}
+
+.skip-link {
+  position: fixed;
+  top: -100px;
+  left: 10px;
+  z-index: 200;
+  background-color: var(--color-warm-orange);
+  color: var(--color-anthrazite);
+  font-weight: 800;
+  font-size: var(--font-size-sm);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 0.85rem 1.4rem;
+  border: var(--border-width) solid var(--color-anthrazite);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-md);
+  transition: top 0.2s ease;
+}
+
+.skip-link:focus-visible {
+  top: 10px;
+  outline: none;
+}
+
 /* Desktop padding */
 @media (min-width: 768px) {
   .container {
