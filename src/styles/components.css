@@ -40,8 +40,13 @@
               margin 0.45s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.nav-logo span {
+.nav-logo-dot {
   color: var(--color-warm-orange);
+}
+
+/* Mobile zeigt nur "F.", Desktop "Florian." — siehe Media Queries unten */
+.nav-logo-short {
+  display: none;
 }
 
 .nav-links {
@@ -71,45 +76,32 @@
   transform: translate(-1px, -1px);
 }
 
-/* Hamburger button — visible only below 768px */
+/* Hamburger/Chevron-Button — visible only below 768px. Bewusst ohne Rahmen/Box:
+   nur der Pfeil selbst ist sichtbar, Klickfläche kommt über Padding. */
 .nav-hamburger {
   display: none;
-  flex-direction: column;
+  align-items: center;
   justify-content: center;
-  gap: 5px;
   background: none;
-  border: var(--border-width) solid var(--color-anthrazite);
-  border-radius: var(--radius);
-  padding: 0.4rem 0.5rem;
+  border: none;
+  padding: 0.6rem;
   cursor: pointer;
-  box-shadow: var(--shadow-sm);
-  transition: transform var(--transition), box-shadow var(--transition);
 }
 
-.nav-hamburger:hover,
-.nav-hamburger:active {
-  transform: translate(2px, 2px);
-  box-shadow: none;
-}
-
-.nav-hamburger span {
+/* Chevron: aus zwei Border-Kanten gezeichnet, zeigt per Default nach unten */
+.nav-hamburger-chevron {
   display: block;
-  width: 22px;
-  height: 2.5px;
-  background-color: var(--color-anthrazite);
-  border-radius: 2px;
-  transition: transform 0.2s ease, opacity 0.2s ease;
+  width: 10px;
+  height: 10px;
+  border-right: 2.5px solid var(--color-anthrazite);
+  border-bottom: 2.5px solid var(--color-anthrazite);
+  transform: rotate(45deg);
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* X animation when open */
-.nav-hamburger.is-open span:nth-child(1) {
-  transform: translateY(7.5px) rotate(45deg);
-}
-.nav-hamburger.is-open span:nth-child(2) {
-  opacity: 0;
-}
-.nav-hamburger.is-open span:nth-child(3) {
-  transform: translateY(-7.5px) rotate(-45deg);
+/* Offen: Pfeil dreht sich um 180° und zeigt nach oben */
+.nav-hamburger.is-open .nav-hamburger-chevron {
+  transform: rotate(225deg);
 }
 
 /* Mobile backdrop blur */
@@ -118,17 +110,18 @@
 }
 
 @media (max-width: 767px) {
+  /* Dunkler + stärker unscharf, damit die Pillen darüber gut lesbar bleiben */
   .nav-backdrop {
     display: block;
     position: fixed;
     inset: 0;
     z-index: 98;
-    background: rgba(0, 0, 0, 0.15);
-    backdrop-filter: blur(6px);
-    -webkit-backdrop-filter: blur(6px);
+    background: rgba(20, 18, 15, 0.55);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
     opacity: 0;
     pointer-events: none;
-    transition: opacity 0.45s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
   .nav-backdrop.is-active {
@@ -137,57 +130,58 @@
   }
 }
 
-/* Mobile menu overlay — slides from behind nav bar */
+/* Mobile menu panel — schwebt als fixiertes Overlay UNTER der Bar (siehe
+   top-Berechnung unten), ist kein Layout-Kind von #nav mehr und schiebt daher
+   nie Inhalt nach unten. Sichtbarkeit läuft über visibility; die einzelnen
+   Pillen übernehmen die Eintritts-Animation (siehe .nav-mobile-link). */
 .nav-mobile-menu {
   display: flex;
   flex-direction: column;
-  position: fixed;
-  top: 0; /* overridden by JS to nav.getBoundingClientRect().bottom */
-  left: var(--spacing-md);
-  right: var(--spacing-md);
-  z-index: 99;
-  background-color: var(--color-cream);
-  border: var(--border-width) solid var(--color-anthrazite);
-  border-radius: var(--radius-input);
-  box-shadow: var(--shadow-lg);
-  padding: var(--spacing-lg);
-  gap: 0;
-  margin-top: 6px;
-
-  /* Closed: Menü hinter Nav versteckt */
-  transform: translateY(-110%);
-  pointer-events: none;
+  align-items: center;
+  gap: var(--spacing-xs);
+  padding: 0 var(--spacing-lg);
   visibility: hidden;
-  transition: transform 0.45s cubic-bezier(0.4, 0, 0.2, 1),
-              visibility 0s linear 0.45s;
+  transition: visibility 0s linear 0.25s;
 }
 
-.nav-mobile-menu.is-open {
-  transform: translateY(0);
-  pointer-events: auto;
-  visibility: visible;
-  transition: transform 0.45s cubic-bezier(0, 0, 0.2, 1),
-              visibility 0s linear 0s;
-}
-
+/* Einzelne Pillen statt Listenzeilen: alle gleich groß, zentriert, kleiner
+   Abstand, kräftiger Kontrast für gute Lesbarkeit über beliebigem Seiteninhalt.
+   Erscheinen nacheinander (Stagger per nth-child, siehe unten) mit kurzem
+   Fade+Slide statt einer langsamen Panel-weiten Blende. */
 .nav-mobile-link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  max-width: 200px;
   color: var(--color-anthrazite);
   text-decoration: none;
-  font-size: 2rem;
-  font-weight: 900;
-  letter-spacing: -0.02em;
-  padding: var(--spacing-md) 0;
-  border-bottom: 1px solid var(--color-light-border);
-  transition: color var(--transition), padding-left var(--transition);
-}
-
-.nav-mobile-link:last-child {
-  border-bottom: none;
+  text-transform: uppercase;
+  font-size: 0.85rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  padding: 0.75rem 1rem;
+  border: var(--border-width) solid var(--color-anthrazite);
+  border-radius: 999px;
+  background-color: rgba(245, 241, 235, 0.94);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+  opacity: 0;
+  transform: translateY(-8px);
+  transition: opacity 0.18s ease, transform 0.18s cubic-bezier(0.34, 1.56, 0.64, 1),
+              color var(--transition), background-color var(--transition),
+              border-color var(--transition), box-shadow var(--transition);
 }
 
 .nav-mobile-link:hover {
   color: var(--color-warm-orange);
-  padding-left: var(--spacing-sm);
+  border-color: var(--color-warm-orange);
+}
+
+.nav-mobile-link:active {
+  transform: translate(2px, 2px);
+  box-shadow: none;
 }
 
 @media (max-width: 767px) {
@@ -197,6 +191,85 @@
 
   .nav-hamburger {
     display: flex;
+  }
+
+  /* #nav bleibt auf Mobile immer bei fixer Höhe — Hintergrund/Radius/Glas
+     leben in .nav-inner. Das Panel hängt separat als position:fixed daneben,
+     #nav wächst also nie und schiebt nichts nach unten. */
+  #nav {
+    background: transparent;
+    box-shadow: none;
+  }
+
+  .nav-inner {
+    background-color: var(--color-cream);
+    border-radius: var(--radius-card);
+    transition: padding 0.45s cubic-bezier(0.4, 0, 0.2, 1),
+                justify-content 0.45s cubic-bezier(0.4, 0, 0.2, 1),
+                background-color 0.3s ease, border-radius 0.45s cubic-bezier(0.4, 0, 0.2, 1),
+                box-shadow 0.3s ease, backdrop-filter 0.3s ease;
+  }
+
+  /* Beim Runterscrollen: kleine, zentrierte, transparente Glas-Pille — analog
+     zur Desktop-Pille, aber schmaler (nur Logo + Pfeil, keine Links auf Mobile) */
+  #nav.nav--pill {
+    width: 128px;
+  }
+
+  #nav.nav--pill .nav-inner {
+    padding: 0 var(--spacing-sm) 0 var(--spacing-md);
+    justify-content: center;
+    gap: var(--spacing-xs);
+    border-radius: 999px;
+    background-color: rgba(245, 241, 235, 0.72);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    box-shadow: 0 4px 24px rgba(42, 42, 42, 0.16);
+  }
+
+  /* Nur in der Scroll-Pille wird aus "Florian." ein "F." — oben bleibt der volle Name */
+  #nav.nav--pill .nav-logo-full {
+    display: none;
+  }
+
+  #nav.nav--pill .nav-logo-short {
+    display: inline;
+  }
+
+  /* Panel-Position: fest unterhalb der Bar berechnet (10px Nav-Abstand zum
+     Rand + Bar-Höhe + 10px Luft) — unabhängig vom Scroll-Pillen-Zustand, da
+     .nav-inner seine Höhe nie ändert (nur Breite/Radius/Hintergrund). */
+  .nav-mobile-menu {
+    position: fixed;
+    top: calc(10px + var(--nav-height) + 10px);
+    left: 0;
+    right: 0;
+    z-index: 99;
+    pointer-events: none;
+  }
+
+  #nav.nav-mobile-open .nav-mobile-menu {
+    visibility: visible;
+    pointer-events: auto;
+    transition: visibility 0s linear 0s;
+  }
+
+  /* Pillen erscheinen nacheinander, sobald das Menü sichtbar wird */
+  #nav.nav-mobile-open .nav-mobile-link {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  #nav.nav-mobile-open .nav-mobile-link:nth-child(1) { transition-delay: 0.05s; }
+  #nav.nav-mobile-open .nav-mobile-link:nth-child(2) { transition-delay: 0.11s; }
+  #nav.nav-mobile-open .nav-mobile-link:nth-child(3) { transition-delay: 0.17s; }
+  #nav.nav-mobile-open .nav-mobile-link:nth-child(4) { transition-delay: 0.23s; }
+
+  /* Muss die Stagger-Regel oben in der Spezifität schlagen, sonst wirkt der
+     Press-Effekt bei offenem Menü nicht */
+  #nav.nav-mobile-open .nav-mobile-link:active {
+    transform: translate(2px, 2px);
+    transition-delay: 0s;
   }
 }
 

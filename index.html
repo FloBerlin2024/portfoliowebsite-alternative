@@ -49,24 +49,26 @@
   <!-- Navigation -->
   <nav id="nav">
     <div class="nav-inner">
-      <a href="#" class="nav-logo">Florian<span>.</span></a>
+      <a href="#" class="nav-logo">
+        <span class="nav-logo-full">Florian</span><span class="nav-logo-short">F</span><span class="nav-logo-dot">.</span>
+      </a>
       <div class="nav-links">
         <a href="#projects">Projekte</a>
         <a href="#about">Über mich</a>
         <a href="#contact">Kontakt</a>
       </div>
       <button class="nav-hamburger" aria-label="Menü öffnen" aria-expanded="false" aria-controls="nav-mobile-menu">
-        <span></span><span></span><span></span>
+        <span class="nav-hamburger-chevron"></span>
       </button>
     </div>
-  </nav>
 
-  <!-- Mobile Menu Overlay -->
-  <div class="nav-mobile-menu" id="nav-mobile-menu">
-    <a href="#projects" class="nav-mobile-link">Projekte</a>
-    <a href="#about" class="nav-mobile-link">Über mich</a>
-    <a href="#contact" class="nav-mobile-link">Kontakt</a>
-  </div>
+    <!-- Mobile Menu Panel — liegt in #nav, damit Pille + Panel dieselbe wachsende Box sind -->
+    <div class="nav-mobile-menu" id="nav-mobile-menu">
+      <a href="#projects" class="nav-mobile-link">Projekte</a>
+      <a href="#about" class="nav-mobile-link">Über mich</a>
+      <a href="#contact" class="nav-mobile-link">Kontakt</a>
+    </div>
+  </nav>
 
   <!-- Mobile Backdrop -->
   <div class="nav-backdrop" id="nav-backdrop"></div>

@@ -8,16 +8,9 @@ export function initNav() {
 
   const nav = document.getElementById('nav')
 
-  function updateMenuTop() {
-    if (nav) {
-      mobileMenu.style.top = nav.getBoundingClientRect().bottom + 'px'
-    }
-  }
-
   function openMenu() {
-    updateMenuTop()
     hamburger.classList.add('is-open')
-    mobileMenu.classList.add('is-open')
+    nav?.classList.add('nav-mobile-open')
     backdrop?.classList.add('is-active')
     hamburger.setAttribute('aria-expanded', 'true')
     hamburger.setAttribute('aria-label', 'Menü schließen')
@@ -25,25 +18,19 @@ export function initNav() {
 
   function closeMenu() {
     hamburger.classList.remove('is-open')
-    mobileMenu.classList.remove('is-open')
+    nav?.classList.remove('nav-mobile-open')
     backdrop?.classList.remove('is-active')
     hamburger.setAttribute('aria-expanded', 'false')
     hamburger.setAttribute('aria-label', 'Menü öffnen')
   }
 
-  // Position beim Start setzen
-  updateMenuTop()
-  window.addEventListener('resize', updateMenuTop, { passive: true })
-
-  // Pill-Nav beim Runterscrollen (nur Desktop)
+  // Pill-Nav beim Runterscrollen (Desktop + Mobile, jeweils eigenes CSS)
   // Schrumpft bei jeder Abwärtsbewegung; expandiert erst wieder ganz oben (scrollY === 0)
-  const desktopQuery = window.matchMedia('(min-width: 768px)')
   let lastScrollY = window.scrollY
   let ticking = false
 
   function updatePillState() {
     ticking = false
-    if (!desktopQuery.matches) return
 
     const currentScrollY = window.scrollY
 
@@ -63,9 +50,6 @@ export function initNav() {
   }
 
   window.addEventListener('scroll', handleScroll, { passive: true })
-  desktopQuery.addEventListener('change', () => {
-    if (!desktopQuery.matches) nav?.classList.remove('nav--pill')
-  })
 
   hamburger.addEventListener('click', () => {
     hamburger.classList.contains('is-open') ? closeMenu() : openMenu()
@@ -76,7 +60,7 @@ export function initNav() {
 
   // Close on outside click
   document.addEventListener('click', (e) => {
-    if (!e.target.closest('#nav') && !e.target.closest('#nav-mobile-menu')) {
+    if (!e.target.closest('#nav')) {
       closeMenu()
     }
   })
