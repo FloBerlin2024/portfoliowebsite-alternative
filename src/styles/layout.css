@@ -18,15 +18,22 @@
    HERO — Mobile First
    ============================================================ */
 
+/* Nav (Höhe + eigener Abstand) + .page-cards-Padding/-Gap oben ziehen wir ab,
+   damit Nav + Hero zusammen exakt einen Viewport füllen, statt minimal
+   drüber hinauszuragen. */
 #hero {
   background: var(--hero-gradient);
+  display: flex;
+  align-items: center;
+  min-height: calc(100vh - 10px - 10px - var(--nav-height)); /* Fallback */
+  min-height: calc(100dvh - 10px - 10px - var(--nav-height)); /* korrekt auch mit mobiler Adressleiste */
 }
 
 /* Mobile: single column, text centered, image below */
 .hero-inner {
   max-width: 1100px;
   margin: 0 auto;
-  padding: var(--spacing-xl) var(--spacing-md) 0;
+  padding: var(--spacing-xl) var(--spacing-md);
   display: grid;
   grid-template-columns: 1fr;
   gap: var(--spacing-md);
@@ -49,7 +56,7 @@
 }
 
 #hero h1 {
-  font-size: clamp(2.8rem, 7vw, 5rem);
+  font-size: clamp(3rem, 9vw, 5.5rem);
   line-height: 1.0;
   letter-spacing: -0.03em;
   margin-bottom: var(--spacing-md);
@@ -57,7 +64,7 @@
 }
 
 .hero-desc {
-  font-size: 1rem;
+  font-size: 1.05rem;
   opacity: 0.68;
   margin-bottom: var(--spacing-lg);
   line-height: 1.7;
@@ -76,9 +83,10 @@
 .hero-image {
   position: relative;
   aspect-ratio: 1 / 1;
-  width: min(80vw, 400px);
+  width: min(78vw, 460px);
   margin: 0 auto;
   background-color: transparent;
+  perspective: 800px;
 }
 
 .hero-photo-img {
@@ -86,6 +94,14 @@
   width: 100%;
   height: 100%;
   object-fit: contain;
+  -webkit-user-drag: none;
+  -webkit-touch-callout: none;
+  user-select: none;
+  -webkit-user-select: none;
+  /* --tilt-x/-y werden per JS (cursorEffects.js) gesetzt */
+  transform: rotateX(var(--tilt-x, 0deg)) rotateY(var(--tilt-y, 0deg));
+  transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: transform;
 }
 
 /* Tablet and up: side-by-side */
@@ -96,7 +112,7 @@
   }
 
   .hero-inner {
-    grid-template-columns: 1fr clamp(300px, 44vw, 520px);
+    grid-template-columns: 1fr clamp(340px, 48vw, 600px);
     grid-template-areas: "text image";
     padding: 0 var(--spacing-xl);
     gap: var(--spacing-xl);
@@ -112,17 +128,17 @@
   .hero-image {
     grid-area: image;
     width: 100%;
-    max-width: 520px;
+    max-width: 600px;
     margin: 0 auto;
   }
 
   #hero h1 {
-    font-size: clamp(2.4rem, 5.5vw, 5rem);
+    font-size: clamp(2.8rem, 6.5vw, 5.75rem);
   }
 
   .hero-desc {
-    font-size: clamp(0.85rem, 1.4vw, 1rem);
-    max-width: 38ch;
+    font-size: clamp(0.95rem, 1.6vw, 1.15rem);
+    max-width: 42ch;
     margin-bottom: var(--spacing-lg);
   }
 
@@ -134,8 +150,8 @@
 /* Wide screens: lock columns, text left — image right */
 @media (min-width: 1200px) {
   .hero-inner {
-    grid-template-columns: 1fr 520px;
-    max-width: 1400px;
+    grid-template-columns: 1fr 600px;
+    max-width: 1500px;
   }
 }
 
@@ -162,20 +178,20 @@
 }
 
 @keyframes hero-word-scroll {
-  0%     { margin-top: 0; }
-  10.95% { margin-top: 0;     animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1); }
-  14.28% { margin-top: -2em; }
-  25.24% { margin-top: -2em;  animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1); }
-  28.57% { margin-top: -4em; }
-  39.52% { margin-top: -4em;  animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1); }
-  42.86% { margin-top: -6em; }
-  53.81% { margin-top: -6em;  animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1); }
-  57.14% { margin-top: -8em; }
-  68.09% { margin-top: -8em;  animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1); }
-  71.43% { margin-top: -10em; }
-  82.38% { margin-top: -10em; animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1); }
-  85.71% { margin-top: -12em; }
-  100%   { margin-top: -12em; }
+  0%     { transform: translateY(0); }
+  10.95% { transform: translateY(0);      animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1); }
+  14.28% { transform: translateY(-2em); }
+  25.24% { transform: translateY(-2em);   animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1); }
+  28.57% { transform: translateY(-4em); }
+  39.52% { transform: translateY(-4em);   animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1); }
+  42.86% { transform: translateY(-6em); }
+  53.81% { transform: translateY(-6em);   animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1); }
+  57.14% { transform: translateY(-8em); }
+  68.09% { transform: translateY(-8em);   animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1); }
+  71.43% { transform: translateY(-10em); }
+  82.38% { transform: translateY(-10em);  animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1); }
+  85.71% { transform: translateY(-12em); }
+  100%   { transform: translateY(-12em); }
 }
 
 /* ============================================================

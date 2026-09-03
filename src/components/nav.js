@@ -35,6 +35,38 @@ export function initNav() {
   updateMenuTop()
   window.addEventListener('resize', updateMenuTop, { passive: true })
 
+  // Pill-Nav beim Runterscrollen (nur Desktop)
+  // Schrumpft bei jeder Abwärtsbewegung; expandiert erst wieder ganz oben (scrollY === 0)
+  const desktopQuery = window.matchMedia('(min-width: 768px)')
+  let lastScrollY = window.scrollY
+  let ticking = false
+
+  function updatePillState() {
+    ticking = false
+    if (!desktopQuery.matches) return
+
+    const currentScrollY = window.scrollY
+
+    if (currentScrollY <= 0) {
+      nav?.classList.remove('nav--pill')
+    } else if (currentScrollY > lastScrollY) {
+      nav?.classList.add('nav--pill')
+    }
+
+    lastScrollY = currentScrollY
+  }
+
+  function handleScroll() {
+    if (ticking) return
+    ticking = true
+    requestAnimationFrame(updatePillState)
+  }
+
+  window.addEventListener('scroll', handleScroll, { passive: true })
+  desktopQuery.addEventListener('change', () => {
+    if (!desktopQuery.matches) nav?.classList.remove('nav--pill')
+  })
+
   hamburger.addEventListener('click', () => {
     hamburger.classList.contains('is-open') ? closeMenu() : openMenu()
   })

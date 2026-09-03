@@ -104,9 +104,14 @@ Footer          → anthrazite (dunkel)
 - Desktop (≥768px): Logo links, Links rechts — Hover = Orange-Fill von rechts nach links, Schrift weiß + letter-spacing größer
 - Mobile (<768px): Hamburger-Button (3 Striche → X-Animation mit CSS), Mobile-Overlay-Panel
 - Overlay: `position: fixed`, Top-Position wird **dynamisch per JS** gesetzt (`nav.getBoundingClientRect().bottom`)
+- **Pill-Nav beim Scrollen (Desktop, ≥768px)**: `nav.js` togglet die Klasse `.nav--pill` auf `#nav` — bei jeder Abwärtsbewegung wird sie gesetzt, sie bleibt beim Hochscrollen bestehen und wird erst entfernt, wenn `scrollY === 0` (nicht schon bei „fast oben"). CSS animiert dabei nur `width` (fest `calc(100% - 20px)` ↔ `460px`, **kein** `fit-content`/`auto` — diese Keywords transitionieren nicht sauber, sondern springen), dazu `border-radius`, `background-color`, `box-shadow`. Pill-Zustand: zentriert (`margin-inline: auto`), Logo ausgeblendet, Links zentriert, `backdrop-filter: blur()` + halbtransparentes Cream
+- **Wichtiger Fallstrick, falls `position: sticky` wieder "kaputt" wirkt** (Element scrollt komplett weg statt zu kleben): `html`/`body` müssen `overflow-x: clip` statt `overflow-x: hidden` verwenden. Mit `hidden` erzwingt die Spec `overflow-y: auto` auf demselben Element (man kann eine Achse nicht `hidden` und die andere `visible` haben) — dadurch wird `body` zum eigenen Scroll-Container und Sticky-Kinder kleben nur noch relativ zu diesem kaputten Container, nicht zum echten Viewport. `clip` verhindert horizontales Scrollen genauso, ohne einen Scroll-Container zu erzeugen.
 
 ### Projekte (`projects.js`)
-- Vier echte Projekte: **TGS Rechner**, **Generatorenwebsite**, **Widgetdock** (Electron-App „cmt" aus `WORKSPACE/Widgetdock`), **Eigenes Design**
+- Vier echte Projekte: **TGS Rechner**, **Generatorenwebsite**, **Widgetdock** (Electron-App „cmt" aus `WORKSPACE/Widgetdock`), **Lernapp**
+- Alle Projektzeilen sind exakt gleich hoch: Bildhälfte hat auf Desktop festes `aspect-ratio: 3/2` (`.featured-project-image`), Querformat-Mockups füllen sie formatfüllend (`object-fit: cover`)
+- **Lernapp = Hochformat-Handy** → Sonderfall über `fit: 'contain'` (projects.js) + Modifier `.featured-project-image--stage`: `object-fit: contain` auf Creme-Bühne (= Kartenfarbe). So ist fast das ganze Handy sichtbar und füllt die Höhe (oben/unten bündig, **kein unterer Rand**), Creme nur seitlich. Mobil bekommt die Bühne `aspect-ratio: 7/10` (nahe Handy-Verhältnis ~0.7), damit das Gerät formatfüllend erscheint statt im flachen 16/9-Feld zu schrumpfen
+- Quelle: `Mockups/Lernapp.png` (Handy auf Weiß) → mit PIL eng aufs Gerät zugeschnitten, unten sauber nach der ERDKUNDE-Karte abgeschnitten, obere Rundungs-Ecken per Flood-Fill auf Creme gesetzt; Ausgabe `lernapp-440/600/732.png`
 - Jedes Projekt hat ein Inline-SVG-Visual im Neobrutalism-Stil; `image`-Feld (Pfad) überschreibt das SVG — dort echte Screenshots eintragen
 - `link` leer = kein "Projekt ansehen"-Button; URL eintragen, sobald vorhanden
 - Alternierend links/rechts auf Desktop (`nth-child(even)` → Bild rechts)
@@ -137,14 +142,17 @@ Footer          → anthrazite (dunkel)
 - `<h2 class="sr-only">` vor dem Services-Grid, damit die Heading-Hierarchie nicht von h1 direkt zu h3 springt
 - Geprüft mit axe-core (0 Violations) und Lighthouse (Accessibility 100)
 
-### Signature-Effekt: Custom Cursor + Magnetic Button (`cursorEffects.js`)
-- Nur bei `pointer: fine` (echte Maus) und ohne `prefers-reduced-motion` — auf Touch/Mobile inaktiv, kein Overhead
-- Custom Cursor: orange Raute (45°-Quadrat, hart, kein Blur) folgt dem Mauszeiger; wächst zum dunklen Quadrat über interaktiven Elementen (`a, button, input, textarea, [role="button"]`); Systemcursor wird per `body.custom-cursor-active` ausgeblendet, außer bei Texteingaben
-- Magnetic Button: nur der Hero-CTA (`.btn-hero-contact`) — zieht sich im 70px-Radius zum Cursor (max. 14px Versatz) via CSS-Custom-Properties `--magnetic-x`/`--magnetic-y`, kombiniert mit dem bestehenden Hover-Lift
-- Bewusst auf ein Element beschränkt (nicht alle Buttons) — ein Signature-Moment, keine Dauerbelastung
+### Signature-Effekt: Custom Cursor (`cursorEffects.js`)
+- Nur bei `pointer: fine` (echte Maus) und ohne `prefers-reduced-motion` — auf Touch/Mobile inaktiv, kein Overhead; Systemcursor wird komplett per `body.custom-cursor-active` ausgeblendet (auch bei Texteingaben)
+- Zwei-Element-Aufbau: `.cursor-shape` (äußeres Element, reine Positions-Verfolgung — JS setzt hier nur `transform: translate(x,y)` bei `mousemove`) + `.cursor-shape-inner` (Kind-Element, trägt Form/Farbe/Rotation, damit die per CSS frei transitionieren/animieren können, ohne der Maus hinterherzuhinken)
+- Form kommt über `mask-image` (SVG-Data-URI, Formen als schwarze Fläche) + `background-color` fürs Einfärben — dadurch lässt sich die Füllfarbe frei ändern, ohne die SVG anzufassen
+- Default: wellenförmige „Sticker"-Scheibe (Orange), rotiert endlos (`@keyframes cursor-spin`, 7s linear) — die Drehung ist der Grund, warum das kein natives `cursor: url()` sein kann (Cursor-Bilder sind statisch, kein Transition/Animation möglich)
+- Hover über Interaktivem (`a, button, input, textarea, [role="button"]`, Klasse `body.cursor-is-active`): wird zum schwarzen 4-Zacken-Stern, etwas kleiner
+- Klick (`body.cursor-is-down`): kurzer Press-Effekt, Form schrumpft
+- Beide Formen sind SVG-Polygone (keine Bézier-Kurven) mit fest berechneten Punktkoordinaten direkt im CSS — bei Formänderung: neue Punkte berechnen (Zentrum 12/12, viewBox 0 0 24 24) statt die bestehenden Pfade zu verbiegen
 
 ### Responsive Bilder
-- Hero-Foto (`collage.png`) und alle Projekt-Mockups (`rechner-*.jpg`, `generator-*.jpg`, `dock-*.jpg`) haben `srcset`/`sizes` für 480–1920px-Breakpoints
+- Hero-Foto (`collage.png`) und alle Projekt-Mockups (`rechner-*.jpg`, `generator-*.jpg`, `dock-*.jpg`, `lernapp-*.png`) haben `srcset`/`sizes` (Lernapp bis 670px, da das Quell-Mockup nur 1078px breit ist)
 - Bilder in JS-Dateien (z. B. `projects.js`) **müssen** als ES-Modul-Imports eingebunden werden (`import x from '../assets/images/x.jpg'`), nicht als reine String-Pfade — sonst kopiert Vite sie beim Build nicht mit und sie 404en in Produktion
 - Service-Icons (`Erde.png`, `Philo.png`, `Digital.png`) sind auf 160px begrenzt (werden bei 56px angezeigt) — beim Ersetzen nicht wieder auf 1000px+ Rohgröße hochladen
 - Letzter Lighthouse-Mobile-Audit (Production-Build via `vite preview`): Performance 92, Accessibility 100, Best Practices 100, SEO 100

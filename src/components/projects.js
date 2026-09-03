@@ -12,12 +12,17 @@ import generator1920 from '../assets/images/generator-1920.jpg'
 import dock640 from '../assets/images/dock-640.jpg'
 import dock1280 from '../assets/images/dock-1280.jpg'
 import dock1920 from '../assets/images/dock-1920.jpg'
+import lernapp440 from '../assets/images/lernapp-440.png'
+import lernapp600 from '../assets/images/lernapp-600.png'
+import lernapp732 from '../assets/images/lernapp-732.png'
 
-// Baut srcset/sizes aus den drei bei 640/1280/1920px vorgenerierten JPEGs.
-function responsiveImage([src640, src1280, src1920], alt, width, height) {
+// Baut srcset/sizes aus vorgenerierten Bildern in aufsteigender Breite.
+function responsiveImage(sources, alt, width, height) {
+  const [small, mid, large] = sources.map(s => s.src)
+  const widths = sources.map(s => s.w)
   return {
-    src: src1280,
-    srcset: `${src640} 640w, ${src1280} 1280w, ${src1920} 1920w`,
+    src: mid,
+    srcset: `${small} ${widths[0]}w, ${mid} ${widths[1]}w, ${large} ${widths[2]}w`,
     sizes: '(min-width: 768px) 50vw, 100vw',
     alt,
     width,
@@ -42,7 +47,7 @@ const projects = [
     tags: ['Web-App', 'Schulalltag'],
     description: 'Noten- und Punkterechner für den Schulalltag: Punkte eintippen, Note sofort sehen — ohne Anmeldung, ohne Umwege, auf jedem Gerät.',
     link: '',
-    image: responsiveImage([rechner640, rechner1280, rechner1920], 'Bildschirm eines Laptops zeigt den TGS Abschlussrechner mit Punkte- und Notenübersicht', 1280, 853),
+    image: responsiveImage([{ src: rechner640, w: 640 }, { src: rechner1280, w: 1280 }, { src: rechner1920, w: 1920 }], 'Bildschirm eines Laptops zeigt den TGS Abschlussrechner mit Punkte- und Notenübersicht', 1280, 853),
     visual: rechnerVisual()
   },
   {
@@ -50,7 +55,7 @@ const projects = [
     tags: ['Unterrichtstools', 'JavaScript'],
     description: 'Zufallsgeneratoren für den Unterricht: Gruppen einteilen, Namen ziehen, Themen auslosen — ein Klick, ein faires Los, keine Diskussion.',
     link: '',
-    image: responsiveImage([generator640, generator1280, generator1920], 'Laptop-Mockup zeigt den Kreuzworträtsel-Generator mit generiertem Rätsel zum Thema Die Erde', 1280, 853),
+    image: responsiveImage([{ src: generator640, w: 640 }, { src: generator1280, w: 1280 }, { src: generator1920, w: 1920 }], 'Laptop-Mockup zeigt den Kreuzworträtsel-Generator mit generiertem Rätsel zum Thema Die Erde', 1280, 853),
     visual: generatorVisual()
   },
   {
@@ -58,15 +63,16 @@ const projects = [
     tags: ['Electron', 'Klassenzimmer'],
     description: 'Schwebende Widgets fürs Klassenzimmer: Fokus-Timer, Lärmampel und Schülerliste als Overlay über dem Desktop — läuft ohne Installation direkt vom USB-Stick.',
     link: '',
-    image: responsiveImage([dock640, dock1280, dock1920], 'Nahaufnahme des Widgetdock-Overlays mit Icons für Timer, Lautstärke, Schülerliste und Notizen', 1280, 652),
+    image: responsiveImage([{ src: dock640, w: 640 }, { src: dock1280, w: 1280 }, { src: dock1920, w: 1920 }], 'Nahaufnahme des Widgetdock-Overlays mit Icons für Timer, Lautstärke, Schülerliste und Notizen', 1280, 652),
     visual: widgetdockVisual()
   },
   {
-    title: 'Eigenes Design',
-    tags: ['Design-System', 'CSS'],
-    description: 'Diese Website als Designprojekt: ein Neobrutalism-System mit harten Schatten, klaren Kanten und mutiger Farbe — von der Palette bis zur Animation selbst gebaut.',
+    title: 'Lernapp',
+    tags: ['Web-App', 'Selbstlernen'],
+    description: 'Interaktive Lern-App für meine Fächer: Erdkunde und Ethik in kurzen Quiz-Runden. Schülerinnen und Schüler üben selbstständig im eigenen Tempo — mit sofortigem Feedback und Dark Mode.',
     link: '',
-    image: '',
+    fit: 'contain',
+    image: responsiveImage([{ src: lernapp440, w: 440 }, { src: lernapp600, w: 600 }, { src: lernapp732, w: 732 }], 'Smartphone mit der Lernapp: LERNAPP-Kopfzeile, Begrüßungskarte und Fach Erdkunde im gelben Neobrutalism-Stil', 732, 1052),
     visual: designVisual()
   }
 ]
@@ -93,12 +99,16 @@ function createProjectRow(project) {
     ? `<img src="${project.image.src}" srcset="${project.image.srcset}" sizes="${project.image.sizes}" alt="${project.image.alt}" width="${project.image.width}" height="${project.image.height}" loading="lazy" decoding="async">`
     : project.visual
 
+  const imageClass = project.fit === 'contain'
+    ? 'featured-project-image featured-project-image--stage'
+    : 'featured-project-image'
+
   const cta = project.link
     ? `<a href="${project.link}" class="btn btn-outline" target="_blank" rel="noopener noreferrer">Projekt ansehen →</a>`
     : ''
 
   row.innerHTML = `
-    <div class="featured-project-image">${media}</div>
+    <div class="${imageClass}">${media}</div>
     <div class="featured-project-text">
       <div class="project-tags">${tags}</div>
       <h3>${project.title}</h3>

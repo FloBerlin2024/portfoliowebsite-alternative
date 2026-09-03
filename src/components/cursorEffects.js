@@ -1,4 +1,4 @@
-// Custom Cursor + Magnetic Button — Signature-Effekt für Maus-Nutzer.
+// Custom Cursor (rotierende Wellen-Scheibe → Stern) + Hero-Tilt — Signature-Effekte.
 // Nur bei echter Maus (pointer: fine) und ohne prefers-reduced-motion.
 export function initCursorEffects() {
   const hasFinePointer = window.matchMedia('(pointer: fine)').matches
@@ -6,66 +6,71 @@ export function initCursorEffects() {
   if (!hasFinePointer || reducedMotion) return
 
   initCustomCursor()
-  initMagneticButton()
+  initHeroTilt()
 }
 
+// Äußeres Element ist reine Positions-Verfolgung; Form/Rotation/Farbe leben im
+// Kind-Element (cursor-shape-inner), damit sie frei animieren können.
 function initCustomCursor() {
   const cursor = document.createElement('div')
-  cursor.className = 'custom-cursor'
+  cursor.className = 'cursor-shape'
   cursor.setAttribute('aria-hidden', 'true')
+
+  const inner = document.createElement('div')
+  inner.className = 'cursor-shape-inner'
+  cursor.appendChild(inner)
+
   document.body.appendChild(cursor)
   document.body.classList.add('custom-cursor-active')
 
-  // Nur Positionierung hier — Form/Drehung übernimmt ::before per CSS-Transition
   window.addEventListener('mousemove', (e) => {
     cursor.classList.add('is-visible')
     cursor.style.transform = `translate(${e.clientX}px, ${e.clientY}px)`
   }, { passive: true })
 
-  window.addEventListener('mousedown', () => cursor.classList.add('is-down'))
-  window.addEventListener('mouseup', () => cursor.classList.remove('is-down'))
+  window.addEventListener('mousedown', () => document.body.classList.add('cursor-is-down'))
+  window.addEventListener('mouseup', () => document.body.classList.remove('cursor-is-down'))
 
   const interactiveSelector = 'a, button, input, textarea, [role="button"]'
 
   document.addEventListener('mouseover', (e) => {
     if (e.target.closest(interactiveSelector)) {
-      cursor.classList.add('is-active')
+      document.body.classList.add('cursor-is-active')
     }
   })
 
   document.addEventListener('mouseout', (e) => {
     if (e.target.closest(interactiveSelector) && !e.relatedTarget?.closest(interactiveSelector)) {
-      cursor.classList.remove('is-active')
+      document.body.classList.remove('cursor-is-active')
     }
   })
 
-  document.addEventListener('mouseleave', () => cursor.classList.add('is-hidden'))
-  document.addEventListener('mouseenter', () => cursor.classList.remove('is-hidden'))
+  document.addEventListener('mouseleave', () => document.body.classList.add('cursor-is-hidden'))
+  document.addEventListener('mouseenter', () => document.body.classList.remove('cursor-is-hidden'))
 }
 
-function initMagneticButton() {
-  const btn = document.querySelector('.btn-hero-contact')
-  if (!btn) return
+// Portrait neigt sich leicht zur Maus — Reaktionsfläche ist die ganze Hero-Section,
+// damit der Effekt schon greift, bevor der Cursor exakt aufs Bild trifft.
+function initHeroTilt() {
+  const section = document.querySelector('#hero')
+  const image = document.querySelector('.hero-photo-img')
+  if (!section || !image) return
 
-  const radius = 70
-  const maxPull = 14
+  const maxTilt = 10 // Grad
 
-  btn.addEventListener('mousemove', (e) => {
-    const rect = btn.getBoundingClientRect()
+  section.addEventListener('mousemove', (e) => {
+    const rect = image.getBoundingClientRect()
     const centerX = rect.left + rect.width / 2
     const centerY = rect.top + rect.height / 2
-    const dx = e.clientX - centerX
-    const dy = e.clientY - centerY
-    const distance = Math.hypot(dx, dy)
-    const pull = Math.min(distance, radius) / radius * maxPull
-    const angle = Math.atan2(dy, dx)
+    const dx = (e.clientX - centerX) / (window.innerWidth / 2)
+    const dy = (e.clientY - centerY) / (window.innerHeight / 2)
 
-    btn.style.setProperty('--magnetic-x', `${Math.cos(angle) * pull}px`)
-    btn.style.setProperty('--magnetic-y', `${Math.sin(angle) * pull}px`)
+    image.style.setProperty('--tilt-x', `${(-dy * maxTilt).toFixed(2)}deg`)
+    image.style.setProperty('--tilt-y', `${(dx * maxTilt).toFixed(2)}deg`)
   })
 
-  btn.addEventListener('mouseleave', () => {
-    btn.style.setProperty('--magnetic-x', '0px')
-    btn.style.setProperty('--magnetic-y', '0px')
+  section.addEventListener('mouseleave', () => {
+    image.style.setProperty('--tilt-x', '0deg')
+    image.style.setProperty('--tilt-y', '0deg')
   })
 }
