@@ -144,14 +144,9 @@ Footer          → anthrazite (dunkel)
 - `<h2 class="sr-only">` vor dem Services-Grid, damit die Heading-Hierarchie nicht von h1 direkt zu h3 springt
 - Geprüft mit axe-core (0 Violations) und Lighthouse (Accessibility 100)
 
-### Signature-Effekt: Custom Cursor (`cursorEffects.js`)
-- Nur bei `pointer: fine` (echte Maus) und ohne `prefers-reduced-motion` — auf Touch/Mobile inaktiv, kein Overhead; Systemcursor wird komplett per `body.custom-cursor-active` ausgeblendet (auch bei Texteingaben)
-- Zwei-Element-Aufbau: `.cursor-shape` (äußeres Element, reine Positions-Verfolgung — JS setzt hier nur `transform: translate(x,y)` bei `mousemove`) + `.cursor-shape-inner` (Kind-Element, trägt Form/Farbe/Rotation, damit die per CSS frei transitionieren/animieren können, ohne der Maus hinterherzuhinken)
-- Form kommt über `mask-image` (SVG-Data-URI, Formen als schwarze Fläche) + `background-color` fürs Einfärben — dadurch lässt sich die Füllfarbe frei ändern, ohne die SVG anzufassen
-- Default: wellenförmige „Sticker"-Scheibe (Orange), rotiert endlos (`@keyframes cursor-spin`, 7s linear) — die Drehung ist der Grund, warum das kein natives `cursor: url()` sein kann (Cursor-Bilder sind statisch, kein Transition/Animation möglich)
-- Hover über Interaktivem (`a, button, input, textarea, [role="button"]`, Klasse `body.cursor-is-active`): wird zum schwarzen 4-Zacken-Stern, etwas kleiner
-- Klick (`body.cursor-is-down`): kurzer Press-Effekt, Form schrumpft
-- Beide Formen sind SVG-Polygone (keine Bézier-Kurven) mit fest berechneten Punktkoordinaten direkt im CSS — bei Formänderung: neue Punkte berechnen (Zentrum 12/12, viewBox 0 0 24 24) statt die bestehenden Pfade zu verbiegen
+### Cursor (`cursorEffects.js`)
+- Bewusst **Standard-Systemcursor**, kein Custom-Cursor — mehrere Design-Varianten (Diamant, Winkel, Blitz, rotierende Scheibe/Stern) wurden ausprobiert und wieder verworfen; `cursorEffects.js` beschränkt sich aktuell auf den Hero-Tilt-Effekt
+- Falls ein Custom-Cursor zurückkommen soll: Positions-Tracking über ein äußeres `position:fixed`-Element (`transform: translate(x,y)` bei `mousemove`, kein CSS-Transition darauf — sonst hinkt es der Maus hinterher) + Form/Farbe/Animation in einem Kind-Element, das frei transitionieren darf. Für animierte Formen (z. B. Rotation) geht das nur so, **nicht** über natives `cursor: url()` (Cursor-Bilder sind statisch)
 
 ### Responsive Bilder
 - Hero-Foto (`collage.png`) und alle Projekt-Mockups (`rechner-*.jpg`, `generator-*.jpg`, `dock-*.jpg`, `lernapp-*.png`) haben `srcset`/`sizes` (Lernapp bis 670px, da das Quell-Mockup nur 1078px breit ist)
