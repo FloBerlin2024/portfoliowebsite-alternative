@@ -67,12 +67,16 @@ section {
   border: 0;
 }
 
-/* Sichtbarer Fokus-Ring für Tastatur-Navigation — konsistent über alle interaktiven Elemente */
+/* Sichtbarer Fokus-Ring für Tastatur-Navigation — konsistent über alle interaktiven Elemente.
+   Nutzt die dunklere Text-Variante von Orange: das helle --color-warm-orange
+   schafft nur 2.0–2.3:1 auf Cream/Weiß (unter dem 3:1-Minimum für
+   UI-Komponenten) — die meisten fokussierbaren Elemente sitzen auf hellem
+   Grund, daher hier die kontraststarke Variante (4.9:1 auf Cream). */
 a:focus-visible,
 button:focus-visible,
 input:focus-visible,
 textarea:focus-visible {
-  outline: 3px solid var(--color-warm-orange);
+  outline: 3px solid var(--color-warm-orange-text);
   outline-offset: 3px;
   border-radius: var(--radius);
 }
@@ -80,6 +84,12 @@ textarea:focus-visible {
 /* Nav-Links haben ihren eigenen Border+Shadow-Fokusindikator — kein doppelter Ring */
 .nav-links a:focus-visible {
   outline: none;
+}
+
+/* Ausnahme: Footer-Logo sitzt auf dunklem Anthrazite-Grund — dort schafft
+   umgekehrt die dunkle Text-Variante nur 2.6:1, das helle Orange 6.3:1 */
+.footer-logo:focus-visible {
+  outline-color: var(--color-warm-orange);
 }
 
 .skip-link {

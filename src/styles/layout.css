@@ -170,7 +170,10 @@
 
 .hero-animate-word {
   display: block;
-  color: var(--color-warm-orange);
+  /* --color-warm-orange schafft hier nur 2.0–2.3:1 auf dem Cream/Lavendel-
+     Gradient (unter WCAG AA). Große Überschrift → 3:1 reicht, die
+     Text-Variante liefert 3.5–4.9:1 */
+  color: var(--color-warm-orange-text);
   height: 1em;
   line-height: 1;
   margin-bottom: 1em;
@@ -346,7 +349,7 @@ html.js [data-reveal].is-revealed {
 }
 
 .contact-email-link:hover {
-  color: var(--color-warm-orange);
+  color: var(--color-warm-orange-text);
 }
 
 /* Desktop: two columns */

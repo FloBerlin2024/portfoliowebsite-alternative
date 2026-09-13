@@ -53,13 +53,15 @@ Alle Tokens in `src/styles/variables.css`.
 
 ### Farben
 ```css
---color-royal-blue:   #003D82   /* Akzent (Projekt-Tags, Back-to-top Button) */
---color-warm-orange:  #D97834   /* Primär-Akzent (Ticker, Primary-Button, Hover) */
---color-anthrazite:   #2A2A2A   /* Text, Borders, Shadows */
---color-cream:        #F5F1EB   /* Hero-Bg, Featured-Projects-Bg, Nav-Mobile-Menu */
---color-white:        #FFFFFF   /* About, Projects-Header, Contact */
---color-light-border: #E0DDD8   /* Trennlinien innerhalb Mobile-Menu */
+--color-royal-blue:       #003D82   /* Akzent (Projekt-Tags, Back-to-top Button) */
+--color-warm-orange:      #FF9019   /* Primär-Akzent als FLÄCHE (Buttons, Badges, Shadows) — als Text/Vordergrund auf Cream/Weiß nur 2.0–2.3:1 Kontrast! */
+--color-warm-orange-text: #A8500A   /* Dieselbe Akzentfarbe, aber WCAG-sicher als Text/Icon/Fokusring auf hellem Grund (4.9:1 Cream, 5.5:1 Weiß, 3.5:1 Lavendel) */
+--color-anthrazite:       #2A2A2A   /* Text, Borders, Shadows */
+--color-cream:            #F5F1EB   /* Hero-Bg, Featured-Projects-Bg, Nav-Mobile-Menu */
+--color-white:            #FFFFFF   /* About, Projects-Header, Contact */
+--color-light-border:     #E0DDD8   /* Trennlinien innerhalb Mobile-Menu */
 ```
+- **Merke:** `--color-warm-orange` nur als Hintergrundfläche verwenden (mit anthrazite Text drauf, das passt: 6.3:1). Für Orange als Text-/Icon-/Rahmenfarbe auf Cream/Weiß/Lavendel immer `--color-warm-orange-text` nehmen — sonst WCAG-AA-Verstoß. Ausnahme: Orange als Text auf **dunklem** Grund (z. B. `.footer-logo span` auf Anthrazite) → dort bleibt das helle `--color-warm-orange` korrekt (6.3:1), die dunkle Variante würde dort nur 2.6:1 schaffen
 
 ### Neobrutalism-Regeln
 - **Border:** `2px solid var(--color-anthrazite)` auf allen interaktiven Elementen
@@ -88,7 +90,7 @@ Footer          → anthrazite (dunkel)
 ### Hero-Animation (CSS-only)
 - H1-Struktur: `ICH BIN` (statisch, Zeile 1) + `.hero-animate` (Zeile 2, scrollende Wortliste)
 - Wörter: LEHRER. / BEGLEITER. / BERATER. / ORGANISATOR. / KI ENTHUSIAST. / DESIGNER. (+ Duplikat für nahtlosen Loop)
-- Kein Rahmen, kein Hintergrund — nur `var(--color-warm-orange)` Textfarbe
+- Kein Rahmen, kein Hintergrund — nur `var(--color-warm-orange-text)` Textfarbe (große Überschrift, daher reicht 3:1 — die helle `--color-warm-orange` schafft dort nur 2.0–2.3:1)
 - Timing: 14s `linear`, `cubic-bezier(0.76, 0, 0.24, 1)` pro Übergang (~0.6s), ~2s Hold je Wort
 - CSS-Klassen: `.hero-animate`, `.hero-animate-track`, `.hero-animate-word` in `layout.css`
 
@@ -140,9 +142,10 @@ Footer          → anthrazite (dunkel)
 
 ### Barrierefreiheit
 - Skip-Link (`.skip-link` in `base.css`) springt zu `id="main"` auf dem `<main class="page-cards">`-Wrapper
-- Globaler `:focus-visible`-Ring (Warm-Orange-Outline) auf allen interaktiven Elementen, `.nav-links a` hat einen eigenen Border+Shadow-Fokus statt des globalen Rings
+- Globaler `:focus-visible`-Ring nutzt `--color-warm-orange-text` (nicht das helle `--color-warm-orange` — das schafft nur 2.0–2.3:1 auf Cream/Weiß, unter dem 3:1-Minimum für UI-Komponenten). Ausnahme: `.footer-logo:focus-visible` auf dem dunklen Footer nutzt das helle Orange zurück (6.3:1 dort vs. nur 2.6:1 mit der dunklen Variante). `.nav-links a` hat einen eigenen Border+Shadow-Fokus statt des globalen Rings
 - `<h2 class="sr-only">` vor dem Services-Grid, damit die Heading-Hierarchie nicht von h1 direkt zu h3 springt
-- Geprüft mit axe-core (0 Violations) und Lighthouse (Accessibility 100)
+- Touch-Ziele: `.nav-hamburger` hat `min-width/height: 44px` (Klickfläche über Padding, der sichtbare Chevron bleibt klein) — Apple-HIG-Richtwert für Standard-Touch-Ziele
+- Geprüft mit axe-core (0 Violations) und Lighthouse (Accessibility 100) — **Hinweis:** Der Audit war vor der Orange-Kontrast-Korrektur (s. o.); axe-core prüft `:hover`/`:focus-visible`-Zustände oft nicht automatisch mit, daher hat der 0-Violations-Stand das Problem nicht gefangen
 
 ### Cursor (`cursorEffects.js`)
 - Bewusst **Standard-Systemcursor**, kein Custom-Cursor — mehrere Design-Varianten (Diamant, Winkel, Blitz, rotierende Scheibe/Stern) wurden ausprobiert und wieder verworfen; `cursorEffects.js` beschränkt sich aktuell auf den Hero-Tilt-Effekt

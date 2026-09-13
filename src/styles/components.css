@@ -41,7 +41,7 @@
 }
 
 .nav-logo-dot {
-  color: var(--color-warm-orange);
+  color: var(--color-warm-orange-text);
 }
 
 /* Mobile zeigt nur "F.", Desktop "Florian." — siehe Media Queries unten */
@@ -84,7 +84,11 @@
   justify-content: center;
   background: none;
   border: none;
-  padding: 0.6rem;
+  /* 10px Chevron + 1rem Padding ≈ 42px Klickfläche — nahe am 44pt-Standard
+     für Touch-Ziele, ohne den unsichtbaren Rahmen optisch aufzublähen */
+  padding: 1rem;
+  min-width: 44px;
+  min-height: 44px;
   cursor: pointer;
 }
 
@@ -175,8 +179,8 @@
 }
 
 .nav-mobile-link:hover {
-  color: var(--color-warm-orange);
-  border-color: var(--color-warm-orange);
+  color: var(--color-warm-orange-text);
+  border-color: var(--color-warm-orange-text);
 }
 
 .nav-mobile-link:active {
