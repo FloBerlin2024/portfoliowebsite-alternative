@@ -397,11 +397,31 @@ footer {
   color: var(--color-warm-orange);
 }
 
-.footer-copy {
+.footer-links {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--spacing-xs) var(--spacing-md);
+}
+
+.footer-links a {
   color: var(--color-cream);
-  opacity: 0.65;
+  opacity: 0.8;
   font-size: var(--font-size-sm);
-  margin-bottom: 0;
+  font-weight: 600;
+  text-decoration: underline;
+  text-decoration-color: transparent;
+  text-underline-offset: 3px;
+}
+
+.footer-links a:hover {
+  opacity: 1;
+  text-decoration-color: var(--color-warm-orange);
+}
+
+/* Footer-Links sitzen auf dunklem Grund → helles Orange für den Fokusring */
+.footer-links a:focus-visible {
+  outline-color: var(--color-warm-orange);
 }
 
 .footer-right {

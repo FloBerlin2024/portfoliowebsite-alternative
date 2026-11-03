@@ -292,7 +292,7 @@
 
   /* Pill state — Desktop, aktiviert per JS beim Runterscrollen */
   #nav.nav--pill {
-    width: 460px;
+    width: 560px;
     border-radius: 999px;
     background-color: rgba(245, 241, 235, 0.72);
     backdrop-filter: blur(14px);
@@ -685,6 +685,17 @@
 
 .form-submit {
   white-space: nowrap;
+}
+
+.form-privacy {
+  font-size: var(--font-size-xs);
+  opacity: 0.75;
+  margin: var(--spacing-sm) 0 0;
+}
+
+.form-privacy a {
+  text-decoration: underline;
+  text-underline-offset: 2px;
 }
 
 #form-message {

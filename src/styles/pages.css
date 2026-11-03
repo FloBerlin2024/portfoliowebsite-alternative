@@ -1,0 +1,282 @@
+/* ============================================================
+   UNTERSEITEN — Blog, Impressum, Datenschutz (Mobile First)
+   ============================================================ */
+
+/* Kopf-Karte: gleicher Verlauf wie der Hero der Startseite */
+.page-header {
+  background: var(--hero-gradient);
+  padding-block: var(--spacing-xl);
+}
+
+/* Kopf + Inhalt teilen dieselbe 760px-Textspalte: Zentrierung über das
+   seitliche Padding, damit Labels/Links bündig links an der Spalte stehen */
+.page-header,
+.page-body {
+  padding-inline: max(var(--spacing-md), calc((100% - 760px) / 2));
+}
+
+.page-header h1 {
+  font-size: clamp(2.2rem, 7vw, 3.6rem);
+  font-weight: 900;
+  margin-bottom: var(--spacing-md);
+  overflow-wrap: break-word;
+}
+
+.page-header-desc {
+  font-size: 1.05rem;
+  opacity: 0.8;
+  margin-bottom: 0;
+}
+
+.page-header .project-tags {
+  margin-top: var(--spacing-md);
+}
+
+.page-header-feed {
+  display: inline-block;
+  font-weight: 700;
+  color: var(--color-warm-orange-text);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.page-back {
+  display: block;
+  width: fit-content;
+  font-size: var(--font-size-sm);
+  font-weight: 700;
+  margin-bottom: var(--spacing-md);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.page-back:hover {
+  color: var(--color-warm-orange-text);
+}
+
+/* Inhalts-Karte */
+.page-body {
+  display: block;
+  background-color: var(--color-white);
+  padding-block: var(--spacing-xl);
+}
+
+@media (min-width: 768px) {
+  .page-header {
+    padding-block: var(--spacing-2xl) var(--spacing-xl);
+  }
+
+  .page-body {
+    padding-block: var(--spacing-2xl);
+  }
+}
+
+/* ── Fließtext (Blogbeiträge, Rechtstexte) ─────────────────── */
+
+.prose {
+  font-size: 1.05rem;
+}
+
+.prose h2 {
+  font-size: clamp(1.35rem, 4vw, 1.75rem);
+  font-weight: 900;
+  margin: var(--spacing-xl) 0 var(--spacing-sm);
+}
+
+.prose > h2:first-child {
+  margin-top: 0;
+}
+
+.prose h3 {
+  font-size: 1.2rem;
+  margin: var(--spacing-lg) 0 var(--spacing-xs);
+}
+
+.prose ul,
+.prose ol {
+  padding-left: 1.4em;
+  margin-bottom: var(--spacing-md);
+}
+
+.prose li {
+  margin-bottom: 0.35em;
+  line-height: 1.6;
+}
+
+.prose a:not(.btn) {
+  color: var(--color-warm-orange-text);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  font-weight: 600;
+}
+
+.prose a:not(.btn):hover {
+  color: var(--color-anthrazite);
+}
+
+.prose blockquote {
+  border-left: 4px solid var(--color-warm-orange);
+  background-color: var(--color-cream);
+  border-radius: 0 var(--radius-input) var(--radius-input) 0;
+  padding: var(--spacing-sm) var(--spacing-md);
+  margin-bottom: var(--spacing-md);
+}
+
+.prose blockquote p:last-child {
+  margin-bottom: 0;
+}
+
+.prose code {
+  font-size: 0.9em;
+  background-color: var(--color-cream);
+  border-radius: 4px;
+  padding: 0.1em 0.35em;
+}
+
+.prose pre {
+  background-color: var(--color-anthrazite);
+  color: var(--color-cream);
+  border-radius: var(--radius-input);
+  padding: var(--spacing-md);
+  overflow-x: auto;
+  margin-bottom: var(--spacing-md);
+}
+
+.prose pre code {
+  background: none;
+  padding: 0;
+  color: inherit;
+}
+
+.prose img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  border: var(--border-width) solid var(--color-anthrazite);
+  border-radius: var(--radius-input);
+  box-shadow: var(--shadow-md);
+  margin: var(--spacing-lg) auto;
+}
+
+.prose hr {
+  border: none;
+  border-top: var(--border-width) solid var(--color-light-border);
+  margin: var(--spacing-xl) 0;
+}
+
+.prose-end {
+  margin-top: var(--spacing-xl);
+}
+
+.prose-note {
+  margin-top: var(--spacing-xl);
+  font-size: var(--font-size-sm);
+  opacity: 0.65;
+}
+
+/* Platzhalter in Impressum/Datenschutz — absichtlich auffällig */
+mark.todo {
+  background-color: var(--color-card-yellow);
+  color: var(--color-anthrazite);
+  border: 2px dashed var(--color-anthrazite);
+  border-radius: 4px;
+  padding: 0 0.3em;
+  font-weight: 700;
+}
+
+/* ── Blog-Übersicht ────────────────────────────────────────── */
+
+.blog-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
+}
+
+.blog-card {
+  position: relative;
+  background-color: var(--color-cream);
+  border: var(--border-width) solid var(--color-anthrazite);
+  border-radius: var(--radius-input);
+  box-shadow: var(--shadow-md);
+  padding: var(--spacing-md) var(--spacing-md) var(--spacing-lg);
+  transition: transform var(--transition), box-shadow var(--transition);
+}
+
+/* Ganze Karte klickbar, Link bleibt aber nur die Überschrift (Screenreader) */
+.blog-card h2 a::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+}
+
+.blog-card:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-lg);
+}
+
+.blog-card:active {
+  transform: translate(3px, 3px);
+  box-shadow: none;
+}
+
+.blog-card:focus-within {
+  outline: 3px solid var(--color-warm-orange-text);
+  outline-offset: 3px;
+}
+
+.blog-card h2 a:focus-visible {
+  outline: none;
+}
+
+.blog-card h2 {
+  font-size: clamp(1.3rem, 4vw, 1.75rem);
+  font-weight: 900;
+  margin-bottom: var(--spacing-xs);
+}
+
+.blog-card-desc {
+  opacity: 0.8;
+  margin-bottom: var(--spacing-sm);
+}
+
+.blog-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4em;
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  opacity: 0.75;
+  margin-bottom: var(--spacing-xs);
+}
+
+.page-header .blog-meta {
+  opacity: 0.85;
+}
+
+.blog-draft {
+  margin-left: 0.4em;
+  font-size: var(--font-size-xs);
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  background-color: var(--color-card-yellow);
+  border: var(--border-width) solid var(--color-anthrazite);
+  border-radius: var(--radius);
+  padding: 0 0.4em;
+}
+
+.blog-empty {
+  text-align: center;
+  font-size: 1.1rem;
+  opacity: 0.75;
+  margin-bottom: 0;
+}
+
+@media (min-width: 768px) {
+  .blog-card {
+    padding: var(--spacing-lg);
+  }
+}

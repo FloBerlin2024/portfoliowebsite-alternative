@@ -26,8 +26,18 @@ Design-Referenz: [kristi.digital](https://kristi.digital) — Neobrutalism-Stil.
 ## Dateistruktur
 
 ```
-index.html                  # Haupt-HTML, alle Sections
+index.html                  # Startseite (One-Pager), alle Sections
+impressum.html              # Impressum (Platzhalter in <mark class="todo"> ausfüllen!)
+datenschutz.html            # Datenschutzerklärung (dito)
+content/blog/*.md           # Blogbeiträge als Markdown — Dateiname = URL /blog/<name>/
+blog/                       # AUTOMATISCH erzeugt aus content/blog (gitignored, nie von Hand bearbeiten)
+public/blog-bilder/         # Bilder für Blogbeiträge (Link: /blog-bilder/x.webp)
+scripts/
+  partials.js               # Nav, Footer, Back-to-top — EINE Quelle für alle Seiten
+  blog.js                   # Markdown → HTML-Seiten, RSS-Feed, Sitemap
+vite.config.js              # Plugins: setzt Partials ein + erzeugt Blog; Multi-Page-Build
 src/
+  page.js                   # Einstieg für Unterseiten (nur Nav, Reveal, Back-to-top)
   main.js                   # App-Init, setzt html.js-Klasse, importiert alle Komponenten
   components/
     nav.js                  # Hamburger-Menü, mobiles Overlay, dynamische Top-Position
@@ -130,6 +140,29 @@ Footer          → anthrazite (dunkel)
 - Honeypot-Feld `_gotcha` (unsichtbar) gegen Spam-Bots — Formspree verwirft Einsendungen, bei denen es ausgefüllt ist
 - E-Mail in `index.html` → **`florian@example.com` ersetzen**
 
+### Mehrseiten-Aufbau (Partials)
+- Nav, Footer und Back-to-top stehen **nur** in `scripts/partials.js`. In jeder HTML-Seite stehen Platzhalter: `<!-- @nav -->` (bzw. `<!-- @nav:blog -->` für `aria-current`), `<!-- @footer -->`, `<!-- @backtotop -->` — das Plugin `partials` in `vite.config.js` ersetzt sie (Dev + Build)
+- Nav-Links sind absolut (`/#projects`, `/blog/`), damit sie von Unterseiten aus funktionieren; auf der Startseite scrollen sie trotzdem nur (gleiche URL, nur anderer Anker)
+- Desktop-Pille ist **560px** breit (4 Links inkl. Blog) — bei weiteren Links Breite erhöhen, sonst laufen sie über
+- Neue Unterseite: HTML-Datei im Root anlegen (Kopf wie `impressum.html`), in `vite.config.js` unter `rollupOptions.input` eintragen und in `sitemapXml()` ergänzen
+- Unterseiten-Styles in `src/styles/pages.css`: `.page-header` (Verlaufs-Kopf), `.page-body` (weiße Karte), `.prose` (Fließtext). Textspalte 760px, zentriert über `padding-inline`, damit Labels/Links bündig links stehen
+
+### Blog (`content/blog/` → `scripts/blog.js`)
+- Ein Beitrag = eine Markdown-Datei mit Frontmatter: `title`, `date` (JJJJ-MM-TT), `description`, `tags` (kommagetrennt), optional `draft: true`
+- `draft: true` erscheint nur im Dev-Server (mit „Entwurf“-Badge), nie im Build. Dateien mit `_` am Anfang werden ignoriert
+- Generator schreibt bei jedem Start/Build `blog/index.html` + `blog/<slug>/index.html` neu; Dev-Server lädt bei Änderungen an `.md`-Dateien automatisch neu
+- Build erzeugt zusätzlich `dist/feed.xml` (RSS, letzte 20) und `dist/sitemap.xml`; `robots.txt` verweist auf die Sitemap
+- Jeder Beitrag bekommt eigene OG-/Canonical-Tags, Lesezeit (200 Wörter/Min.) und Datum auf Deutsch
+- Markdown-Parser: `marked` (devDependency, nur beim Build). `<pre>` bekommt `tabindex="0"` (axe: scrollbare Bereiche per Tastatur erreichbar)
+- Beispielbeitrag `content/blog/willkommen.md` ist ein Entwurf mit Schreibanleitung — vor dem ersten echten Beitrag löschen oder überschreiben
+
+### Impressum & Datenschutz
+- Platzhalter stehen in `<mark class="todo">[ … ]</mark>` (gelb gestrichelt sichtbar). `npm run build` warnt, solange noch einer drin ist
+- Impressum nach § 5 DDG + § 18 Abs. 2 MStV (Blog = journalistisch-redaktionell), Hinweis „private Website, nicht Meinung des Dienstherrn“
+- Datenschutz deckt ab: Server-Logs (Hoster), Formspree (USA-Transfer — Rechtsgrundlage im Formspree-Vertrag prüfen), E-Mail, Blog/RSS, Betroffenenrechte, Aufsicht LDA Brandenburg. **Bei Analytics, Videos, Newsletter oder Shop ergänzen**
+- Unter dem Kontaktformular steht ein Hinweis mit Link zur Datenschutzerklärung
+- Beide Seiten `noindex, follow` (nicht in Google-Ergebnissen, Links werden trotzdem verfolgt)
+
 ### Back-to-top Button
 - Erscheint nach 400px Scroll
 - Royal Blue, Neobrutalism-Stil, 42px × 42px (Mobile) / 48px × 48px (Desktop)
@@ -139,7 +172,7 @@ Footer          → anthrazite (dunkel)
 - Open-Graph- + Twitter-Meta-Tags in `index.html` (`og:title`, `og:image`, …) — `og:image` zeigt auf `/og-image.jpg` (liegt in `public/`, **nicht** in `src/assets/` — Vite verarbeitet `<meta content>`-Pfade nicht, nur `public/` wird 1:1 in den Build kopiert)
 - Domain: `https://flomat.uber.space/` — steht in `og:url`, `og:image`, `<link rel="canonical">` und JSON-LD `url`. Bei Domainwechsel alle vier anpassen
 - JSON-LD (`Person`-Schema) im `<head>` für Rich-Snippets
-- `public/robots.txt` erlaubt vollständiges Crawling; kein `sitemap.xml`, solange keine Domain feststeht
+- `public/robots.txt` erlaubt vollständiges Crawling und verweist auf `/sitemap.xml` (wird beim Build erzeugt)
 
 ### Barrierefreiheit
 - Skip-Link (`.skip-link` in `base.css`) springt zu `id="main"` auf dem `<main class="page-cards">`-Wrapper
@@ -169,7 +202,9 @@ Footer          → anthrazite (dunkel)
 1. **E-Mail** in `index.html` ersetzen: `florian@example.com` → echte Adresse
 2. **Formspree** einrichten: `src/components/contact.js` → `YOUR_FORM_ID` ersetzen
 3. **Projekt-Links** in `src/components/projects.js` eintragen (`link`-Feld), sobald die Projekte online sind
-4. **Optional:** echte Screenshots statt SVG-Visuals (`image`-Feld in `projects.js`)
+4. **Impressum + Datenschutz**: alle `<mark class="todo">`-Platzhalter ausfüllen (Build warnt sonst)
+5. **Blog**: Beispiel-Entwurf `content/blog/willkommen.md` durch ersten echten Beitrag ersetzen
+6. **Optional:** echte Screenshots statt SVG-Visuals (`image`-Feld in `projects.js`)
 
 ---
 
