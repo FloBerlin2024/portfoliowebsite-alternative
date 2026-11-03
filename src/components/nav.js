@@ -24,31 +24,26 @@ export function initNav() {
     hamburger.setAttribute('aria-label', 'Menü öffnen')
   }
 
-  // Pill-Nav beim Runterscrollen (Desktop + Mobile, jeweils eigenes CSS)
-  // Schrumpft bei jeder Abwärtsbewegung; expandiert erst wieder ganz oben (scrollY === 0)
-  let lastScrollY = window.scrollY
+  // Beim Scrollen wird der Header nur flacher (.nav--scrolled), ganz oben wieder voll.
+  // Hysterese (an ab 40px, aus erst bei 0): Der Header ist im Layoutfluss, sein
+  // Höhenwechsel verschiebt den Inhalt — ohne Abstand würde das am Seitenanfang
+  // per Scroll-Anchoring hin- und herspringen.
   let ticking = false
 
-  function updatePillState() {
+  function updateScrolledState() {
     ticking = false
-
-    const currentScrollY = window.scrollY
-
-    if (currentScrollY <= 0) {
-      nav?.classList.remove('nav--pill')
-    } else if (currentScrollY > lastScrollY) {
-      nav?.classList.add('nav--pill')
-    }
-
-    lastScrollY = currentScrollY
+    const y = window.scrollY
+    if (y > 40) nav?.classList.add('nav--scrolled')
+    else if (y <= 0) nav?.classList.remove('nav--scrolled')
   }
 
   function handleScroll() {
     if (ticking) return
     ticking = true
-    requestAnimationFrame(updatePillState)
+    requestAnimationFrame(updateScrolledState)
   }
 
+  updateScrolledState()
   window.addEventListener('scroll', handleScroll, { passive: true })
 
   hamburger.addEventListener('click', () => {
@@ -57,6 +52,14 @@ export function initNav() {
 
   // Close on link click
   mobileLinks.forEach(link => link.addEventListener('click', closeMenu))
+
+  // Escape schließt das Menü und gibt den Fokus an den Button zurück
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && hamburger.classList.contains('is-open')) {
+      closeMenu()
+      hamburger.focus()
+    }
+  })
 
   // Close on outside click
   document.addEventListener('click', (e) => {

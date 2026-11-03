@@ -3,7 +3,7 @@ import { initProjects } from './components/projects.js'
 import { initContact } from './components/contact.js'
 import { initReveal } from './components/reveal.js'
 import { initBackToTop } from './components/backToTop.js'
-import { initCursorEffects } from './components/cursorEffects.js'
+import { initHeroAnimation } from './components/heroAnimation.js'
 
 // Signal für CSS: JS läuft — erst dann werden [data-reveal]-Elemente initial versteckt
 document.documentElement.classList.add('js')
@@ -14,7 +14,7 @@ function init() {
   initContact()
   initReveal()
   initBackToTop()
-  initCursorEffects()
+  initHeroAnimation()
 }
 
 if (document.readyState === 'loading') {

@@ -5,7 +5,7 @@
 Persönliches Portfolio von **Florian Matthias**, Lehrer für Geografie & Ethik.
 Stack: **Vite + Vanilla JS (ES Modules)** — kein Framework, kein Build-Step nötig für Dev.
 
-Design-Referenz: [kristi.digital](https://kristi.digital) — Neobrutalism-Stil.
+Design: **Swiss Style** (wie der Kurswahlrechner) — Weiß, Tinte, ein Indigo-Akzent, schmale Archivo-Versalien, harte Rahmen ohne Radius/Schatten.
 
 ---
 
@@ -18,7 +18,8 @@ Design-Referenz: [kristi.digital](https://kristi.digital) — Neobrutalism-Stil.
 | CSS Custom Properties | Design Tokens in `variables.css` |
 | Playwright MCP | Visuelle Tests / Screenshots |
 
-**Dev starten:** `npm run dev`
+**Dev starten:** `npm run dev` → http://localhost:3000 (Port + Auto-Öffnen in `vite.config.js`)
+**Nie `index.html` direkt öffnen** (Doppelklick / `file://`): Der Browser blockiert dann `main.js` (ES-Module) → keine Projektkarten/-bilder, kein Menü. Immer über Vite (`dev` oder `preview`) ansehen
 **Build:** `npm run build`
 
 ---
@@ -26,99 +27,114 @@ Design-Referenz: [kristi.digital](https://kristi.digital) — Neobrutalism-Stil.
 ## Dateistruktur
 
 ```
-index.html                  # Haupt-HTML, alle Sections
+index.html                  # Startseite, alle Sections (<title>: nur „Florian“)
+impressum.html              # Impressum (§ 5 DDG, § 18 MStV) — eigener Vite-Einstiegspunkt
+datenschutz.html            # Datenschutzerklärung (keine Cookies, Hosting, Formspree, Rechte)
+vite.config.js              # rollupOptions.input: alle drei HTML-Seiten (neue Seiten hier eintragen!)
 src/
   main.js                   # App-Init, setzt html.js-Klasse, importiert alle Komponenten
   components/
-    nav.js                  # Hamburger-Menü, mobiles Overlay, dynamische Top-Position
-    projects.js             # Projekt-Daten + DOM-Rendering + Inline-SVG-Visuals
+    nav.js                  # Chevron-Menü (mobil), .nav--scrolled beim Scrollen, Escape schließt
+    projects.js             # Projekt-Daten + Panel-Karten + Inline-SVG-Fallback-Visuals
     contact.js              # Kontaktformular + Formspree
     reveal.js               # Scroll-Reveal via IntersectionObserver ([data-reveal])
+    heroAnimation.js        # Pause-Schalter der Hero-Wortanimation (WCAG 2.2.2)
     backToTop.js            # Back-to-top Button
   styles/
     main.css                # Importiert alle CSS-Dateien
-    variables.css           # Design Tokens (Farben, Spacing, Shadows)
+    fonts.css               # @font-face für Archivo (woff2 aus assets/fonts/)
+    variables.css           # Design Tokens (Farben, Rahmen, Spacing)
     base.css                # Reset, Typography, .container
-    layout.css              # Section-Layouts (Hero, About, Projects, Contact, Footer)
-    components.css          # UI-Komponenten (Nav, Buttons, Cards, Forms, Back-to-top)
+    layout.css              # Sections (Hero, 01 Schwerpunkte, 02 Projekte, 03 Kontakt, Footer), Reveal
+    components.css          # Bausteine (Nav, Buttons, .panel, .section-head, .square-link, Formular, Back-to-top)
   assets/
-    images/                 # Projektbilder + Profilfoto (florian.png)
+    fonts/                  # Archivo-woff2 (latin + latin-ext, variabel) + OFL-Lizenz
+    images/                 # Projektbilder + Porträt (sketch.png)
 ```
 
 ---
 
-## Design System — Neobrutalism
+## Design System — Swiss Style
 
 Alle Tokens in `src/styles/variables.css`.
 
 ### Farben
 ```css
---color-royal-blue:       #003D82   /* Akzent (Projekt-Tags, Back-to-top Button) */
---color-warm-orange:      #FF9019   /* Primär-Akzent als FLÄCHE (Buttons, Badges, Shadows) — als Text/Vordergrund auf Cream/Weiß nur 2.0–2.3:1 Kontrast! */
---color-warm-orange-text: #A8500A   /* Dieselbe Akzentfarbe, aber WCAG-sicher als Text/Icon/Fokusring auf hellem Grund (4.9:1 Cream, 5.5:1 Weiß, 3.5:1 Lavendel) */
---color-anthrazite:       #2A2A2A   /* Text, Borders, Shadows */
---color-cream:            #F5F1EB   /* Hero-Bg, Featured-Projects-Bg, Nav-Mobile-Menu */
---color-white:            #FFFFFF   /* About, Projects-Header, Contact */
---color-light-border:     #E0DDD8   /* Trennlinien innerhalb Mobile-Menu */
+--color-ink:          #0F172A  /* Text, Rahmen, Kopfbalken, Footer */
+--color-muted:        #475569  /* Sekundärtext, Labels (7.6:1 auf Weiß) */
+--color-paper:        #FFFFFF  /* Seitengrund — alles liegt auf Weiß */
+--color-subtle:       #F1F5F9  /* nur Bild-Bühne (Lernapp, SVG-Fallbacks) */
+--color-accent:       #4F46E5  /* Indigo — Fläche mit weißem Text ODER Text auf Weiß (6.3:1) */
+--color-accent-dark:  #4338CA  /* Hover (7.9:1 mit Weiß) */
+--color-footer-muted: #CBD5E1  /* Sekundärtext auf Ink (12:1) */
 ```
-- **Merke:** `--color-warm-orange` nur als Hintergrundfläche verwenden (mit anthrazite Text drauf, das passt: 6.3:1). Für Orange als Text-/Icon-/Rahmenfarbe auf Cream/Weiß/Lavendel immer `--color-warm-orange-text` nehmen — sonst WCAG-AA-Verstoß. Ausnahme: Orange als Text auf **dunklem** Grund (z. B. `.footer-logo span` auf Anthrazite) → dort bleibt das helle `--color-warm-orange` korrekt (6.3:1), die dunkle Variante würde dort nur 2.6:1 schaffen
+- **Ein** Akzent. Indigo auf Ink schafft nur 2.8:1 → auf dunklem Grund (Footer) Fokus/Text in Weiß, Indigo dort nur als Fläche (Logo-Quadrat)
 
-### Neobrutalism-Regeln
-- **Border:** `2px solid var(--color-anthrazite)` auf allen interaktiven Elementen
-- **Shadows:** Hart, offset (kein blur) — `3px 3px 0`, `5px 5px 0`, `7px 7px 0` + `var(--color-anthrazite)`
-- **Hover:** `translateY(-3px)` + Shadow wächst → Lift-Effekt
-- **Active/Click:** `translate(3px, 3px)` + Shadow verschwindet → Press-Effekt
-- **Border-Radius:** `--radius: 6px` (Buttons, Tags), `--radius-input: 12px` (Inputs, Karten)
-- **Font-Weight:** Headings + Nav = `900`
+### Rahmen & Form
+```css
+--radius: 0;
+--border:      3px solid var(--color-ink);  /* Karten, Buttons, Formular-Panel */
+--border-thin: 2px solid var(--color-ink);  /* Inputs, Unterlinien, Menü-Trenner */
+--rule-thick:  6px solid var(--color-ink);  /* Header-Unterkante, Abschnittsanfang */
+```
+- **Keine** Schatten, keine Rundungen, keine translate-/Lift-Effekte. Hover = Farbwechsel (Fläche oder Unterstreichung)
+- Trennung über dicke Linien (`--rule-thick`), nicht über Flächenfarben
 
-### Section-Backgrounds (von oben nach unten)
+### Typografie
+- Schrift: **Archivo Variable**, self-hosted als woff2 in `src/assets/fonts/` (`fonts.css`, relative Pfade → lädt auch ohne Vite). Breite 62–125 %, Gewicht 100–900. **Kein** Google-Fonts-CDN (DSGVO)
+- Fließtext 17px (18px ab 1024px), `line-height: 1.5`, Ziffern `tabular-nums`
+- Display (H1–H3): 800, uppercase, `line-height` 0.86–0.95
+  - H1 `clamp(64px, 10vw, 148px)`, `font-stretch: 62.5%` — **Hero-H1 ist bewusst kleiner**: `clamp(36px, 11cqi, 88px)`, `.hero-text` ist `container-type: inline-size`. „KI-ENTHUSIAST." ist ~5.65em breit → füllt so nur ~62 % der Spalte, bei jeder Viewport-Breite. Größere Werte liefen über das Porträt. Harte Grenze: `#hero h1 { max-width: 100%; overflow-x: clip }` + `.hero-animate { max-width: 100% }`. Bei neuen/längeren Animationswörtern nachrechnen (cqi-Faktor × Wortbreite in em deutlich < 100 %)
+  - H2 `clamp(36px, 5vw, 56px)`, 62.5 % · H3 30–34px, 75 %
+- **Label-Stil** `.label`: 13px, 700, `letter-spacing: 0.12em`, uppercase — für Nav, Kopfbalken, Eyebrows, Formular-Labels
+
+### Bausteine (`components.css`)
+- **`.panel`** — Karte mit `--border`; darin **`.panel-bar`** (Ink-Balken, weißer Label-Text, links Nummer, rechts `.panel-bar-tags` in footer-muted) und `.panel-body`
+- **`.section-head`** — `border-top: --rule-thick`, große Akzent-Ziffer `.section-num` (72px, 62.5 %, `aria-hidden`) + H2. Optional `.section-intro` darunter (max 560px, muted)
+- **Buttons** `.btn` — eckig, `min-height: 52px`, `--border`, 15px/800 Label-Stil. `.btn-primary` = Indigo + weißer Text (+ Pfeil-SVG `.btn-arrow`, `stroke-linecap: square`), Hover `--color-accent-dark`. `.btn-outline` = Weiß/Ink, Hover Ink-Fläche
+- **`.square-link`** — Link mit 10×10px-Akzent-Quadrat statt Pfeil/Icon (auch `.square-list` für Aufzählungen)
+- **`.logo-mark`** — Indigo-Quadrat „F." (Header + Footer)
+- **Formular** — sichtbare Labels (`.label`), Inputs `--border-thin`, `min-height: 48px`, 17px Schrift (≥16px gegen iOS-Zoom)
+- **Fokus** global `outline: 3px solid var(--color-accent); outline-offset: 2px`; im Footer weiß; Back-to-top färbt sich beim Fokus zusätzlich Indigo (liegt mal auf Weiß, mal auf Ink)
+
+### Seitenaufbau (von oben nach unten)
 ```
-Nav             → cream (sticky, floating Card)
-Hero            → hero-gradient (cream → lavender)
-Services        → card-yellow / card-green / card-pink
-Projects-Intro  → white
-Proj. Rows      → cream (.featured-projects)
-Contact         → white
-Footer          → anthrazite (dunkel)
+Header       → weiß, sticky, border-bottom --rule-thick
+Hero         → 2 Spalten ab 768px: Text | Porträt-Panel (Nº 00)
+01 Schwerpunkte (#about)   → 3 Panels, auto-fit minmax(300px)
+02 Projekte (#projects)    → Panels, auto-fit minmax(480px)
+03 Kontakt (#contact)      → Text + E-Mail | Formular-Panel
+Footer       → volle Breite, Ink
 ```
-→ **Keine Trennlinien** zwischen Sections — Farbwechsel erzeugt Trennung.
+- Container: `max-width: 1280px; padding-inline: clamp(16px, 4vw, 56px)` (`.container`, `--gutter`)
+- Grid-Abstand überall `--grid-gap: 10px`
+- `section[id]` hat `scroll-margin-top`, damit Anker nicht unter dem Sticky-Header landen
 
 ---
 
 ## Komponenten
 
-### Hero-Animation (CSS-only)
-- H1-Struktur: `ICH BIN` (statisch, Zeile 1) + `.hero-animate` (Zeile 2, scrollende Wortliste)
-- Wörter: LEHRER. / BEGLEITER. / BERATER. / ORGANISATOR. / KI ENTHUSIAST. / DESIGNER. (+ Duplikat für nahtlosen Loop)
-- Kein Rahmen, kein Hintergrund — nur `var(--color-warm-orange-text)` Textfarbe (große Überschrift, daher reicht 3:1 — die helle `--color-warm-orange` schafft dort nur 2.0–2.3:1)
-- Timing: 14s `linear`, `cubic-bezier(0.76, 0, 0.24, 1)` pro Übergang (~0.6s), ~2s Hold je Wort
-- CSS-Klassen: `.hero-animate`, `.hero-animate-track`, `.hero-animate-word` in `layout.css`
+### Header / Navigation (`nav.js` + CSS)
+- Links Logo (`.logo-mark` + „Florian“), rechts „01 Über mich / 02 Projekte / 03 Kontakt" — Nummern passen zu den Abschnitten, der letzte Link ist eine Ink-Fläche
+- `position: sticky; top: 0`. `nav.js` setzt `.nav--scrolled` → nur `padding-block` wird kleiner. **Hysterese** (an ab 40px, aus erst bei `scrollY === 0`), sonst springt der Header am Seitenanfang per Scroll-Anchoring hin und her
+- **Fallstrick sticky:** `html`/`body` brauchen `overflow-x: clip` statt `hidden` — `hidden` macht `body` zum Scroll-Container, dann klebt nichts mehr am Viewport
+- Mobil (<768px): Chevron-Button (`.nav-hamburger`, ohne Rahmen, 44×44px Klickfläche) togglet `.nav-mobile-open`. Das Menü ist eine weiße Liste in voller Breite direkt unter der dicken Unterkante (`position: absolute; top: calc(100% + 6px)` in `#nav`), Einträge mit 2px-Trennern, `min-height: 56px`. Dahinter einfacher dunkler Backdrop (kein Blur). Escape schließt und fokussiert den Button
 
-### Hero-Typografie & Responsive-Logik
-- **H1 Mobile** (gestapelt, <768px): `clamp(2.8rem, 7vw, 3.8rem)` — groß, nutzt volle Breite
-- **H1 Desktop** (≥768px): `clamp(2rem, 5.5vw, 3.8rem)` — schrumpft flüssig mit Viewport
-- **Beschreibung Mobile**: kein `max-width`, volle Container-Breite
-- **Beschreibung Desktop**: `clamp(0.85rem, 1.4vw, 1rem)`, `max-width: 38ch`
-- **Bild-Spalte** (≥768px): `clamp(300px, 44vw, 520px)` — schrumpft langsamer als Textspalte → Bild bleibt proportional groß
-- **Bild-Container**: `aspect-ratio: 1`, `object-fit: contain` — collage.png ist 1040×1040 (auf Web-Größe optimiert), füllt Box vollständig ohne Crop
-
-### Navigation (`nav.js` + CSS)
-- Desktop (≥768px): Logo links, Links rechts — Hover = Orange-Fill von rechts nach links, Schrift weiß + letter-spacing größer
-- **Pill-Nav beim Scrollen (Desktop + Mobile)**: `nav.js` togglet die Klasse `.nav--pill` auf `#nav` (kein Viewport-Gate mehr, jede Breite bekommt ihr eigenes CSS) — bei jeder Abwärtsbewegung wird sie gesetzt, sie bleibt beim Hochscrollen bestehen und wird erst entfernt, wenn `scrollY === 0` (nicht schon bei „fast oben"). Animiert wird nur `width` (feste Werte, **kein** `fit-content`/`auto` — diese Keywords transitionieren nicht sauber, sondern springen), dazu `border-radius`, `background-color`, `box-shadow`. Desktop-Pille: 460px, zentriert, Logo komplett ausgeblendet, Links zentriert. Mobile-Pille: 128px, nur Logo (als „F.") + Pfeil
-- **Wichtiger Fallstrick, falls `position: sticky` wieder "kaputt" wirkt** (Element scrollt komplett weg statt zu kleben): `html`/`body` müssen `overflow-x: clip` statt `overflow-x: hidden` verwenden. Mit `hidden` erzwingt die Spec `overflow-y: auto` auf demselben Element (man kann eine Achse nicht `hidden` und die andere `visible` haben) — dadurch wird `body` zum eigenen Scroll-Container und Sticky-Kinder kleben nur noch relativ zu diesem kaputten Container, nicht zum echten Viewport. `clip` verhindert horizontales Scrollen genauso, ohne einen Scroll-Container zu erzeugen.
-- **Logo-Umschaltung**: `.nav-logo` enthält zwei Text-Spans (`.nav-logo-full` „Florian", `.nav-logo-short` „F") — welcher sichtbar ist, steuert reines CSS per Breakpoint/Zustand (kein `aria-hidden`-Trick nötig, das jeweils unsichtbare `display:none`-Span fällt automatisch aus dem Accessible Name). Mobil oben steht „Florian.", erst in der Scroll-Pille wird daraus „F."
-- **Mobile Menü (<768px)**: Pfeil-Button (`.nav-hamburger`, bewusst ohne Rahmen/Box — nur der Chevron aus zwei Border-Kanten, dreht sich beim Öffnen um 180°) togglet `.nav-mobile-open` auf `#nav`. Das Menü-Panel (`#nav-mobile-menu`) ist **`position: fixed`**, liegt zwar im DOM innerhalb von `#nav`, aber außerhalb des normalen Layoutflusses — `#nav`/`.nav-inner` wachsen beim Öffnen **nicht**, nichts wird nach unten verschoben. Panel-Position ist fix berechnet (`top: calc(10px + var(--nav-height) + 10px)`), keine JS-Positionierung mehr nötig, da `.nav-inner` seine Höhe nie ändert (nur Breite/Radius/Hintergrund je nach `.nav--pill`)
-- Die drei Menüpunkte sind einzelne, gleich große, zentrierte Glas-Pillen (kein gemeinsamer Panel-Hintergrund) mit kräftigem Kontrast (fast blickdichtes Cream + `backdrop-filter`), die per `nth-child`-Stagger nacheinander einfliegen (Fade + Slide, ~60ms Versatz)
-- Der dunkle `.nav-backdrop` hinter dem Menü ist bewusst stark abgedunkelt + geblurrt (`rgba(20,18,15,0.55)`, `blur(10px)`), damit die Pillen vor beliebigem Seiteninhalt lesbar bleiben
+### Hero
+- Eyebrow (Label, muted) → H1 „Ich bin" + `.hero-animate` (Indigo) → Beschreibung (max 560px) → Buttons „Kontakt aufnehmen →" (primary) + „Projekte ansehen" (outline) → Rollenzeile `.hero-roles` unten mit `--border-thin`-Oberlinie
+- Wortanimation: Wörter LEHRER. / BEGLEITER. / BERATER. / ORGANISATOR. / KI-ENTHUSIAST. / DESIGNER. (+ Duplikat für den Loop), 14s, ~0.6s `cubic-bezier(0.76, 0, 0.24, 1)` pro Wechsel, Schritte à 2em (Wort `height: 1em` + `margin-bottom: 1em`). `prefers-reduced-motion` stoppt sie
+- Porträt `sketch.png` in `<figure class="panel">` mit Balken nur „Porträt“, `aspect-ratio: 1; object-fit: contain`, `<figcaption>` „Florian Matthias“ mit 3px-Oberlinie
+- **Volle Viewport-Höhe:** `#hero { min-height: calc(100svh - var(--nav-h)) }` → Header + Hero füllen immer mindestens einen Viewport (Inhalt vertikal zentriert). `--nav-h` (78px mobil / 86px ab 768px, in `variables.css`) muss zur echten Header-Höhe passen — bei Änderungen an Nav-Padding/Logo-Größe mit anpassen
+- Rollenzeile + Pause-Button (`.hero-pause`, `aria-pressed`) — ohne JS oder bei `prefers-reduced-motion` ausgeblendet. Für Screenreader steht in der H1 ein `sr-only`-Satz, die animierte Wortliste ist `aria-hidden`
+- **Statisch:** Der Hero-Tilt aus `cursorEffects.js` ist deaktiviert (wird in `main.js` nicht mehr aufgerufen, Datei bleibt liegen)
 
 ### Projekte (`projects.js`)
-- Vier echte Projekte: **TGS Rechner**, **Generatorenwebsite**, **Widgetdock** (Electron-App „cmt" aus `WORKSPACE/Widgetdock`), **Lernapp**
-- Alle Projektzeilen sind exakt gleich hoch: Bildhälfte hat auf Desktop festes `aspect-ratio: 3/2` (`.featured-project-image`), Querformat-Mockups füllen sie formatfüllend (`object-fit: cover`)
-- **Lernapp = Hochformat-Handy** → Sonderfall über `fit: 'contain'` (projects.js) + Modifier `.featured-project-image--stage`: `object-fit: contain` auf Creme-Bühne (= Kartenfarbe). So ist fast das ganze Handy sichtbar und füllt die Höhe (oben/unten bündig, **kein unterer Rand**), Creme nur seitlich. Mobil bekommt die Bühne `aspect-ratio: 7/10` (nahe Handy-Verhältnis ~0.7), damit das Gerät formatfüllend erscheint statt im flachen 16/9-Feld zu schrumpfen
-- Quelle: `Mockups/Lernapp.png` (Handy auf Weiß) → mit PIL eng aufs Gerät zugeschnitten, unten sauber nach der ERDKUNDE-Karte abgeschnitten, obere Rundungs-Ecken per Flood-Fill auf Creme gesetzt; Ausgabe `lernapp-440/600/732.png`
-- Jedes Projekt hat ein Inline-SVG-Visual im Neobrutalism-Stil; `image`-Feld (Pfad) überschreibt das SVG — dort echte Screenshots eintragen
-- `link` leer = kein "Projekt ansehen"-Button; URL eintragen, sobald vorhanden
-- Alternierend links/rechts auf Desktop (`nth-child(even)` → Bild rechts)
+- Vier Projekte: **TGS Rechner**, **Generatorenwebsite**, **Widgetdock** (Electron-App „cmt" aus `WORKSPACE/Widgetdock`), **Lernapp**
+- `createProjectRow()` erzeugt `.panel.project-card`: Balken „Projekt 0N" | `tags.join(' · ')` → `.project-media` (`aspect-ratio: 3/2`, `object-fit: cover`, `border-bottom: --border`) → H3 + Beschreibung (+ optional `.square-link` „Projekt ansehen", wenn `link` gesetzt)
+- **Lernapp = Hochformat-Handy** → `fit: 'contain'` → `.project-media--stage`: `object-fit: contain` auf `--color-subtle`. Quelle: `Mockups/Lernapp.png`, per PIL aufs Gerät zugeschnitten → `lernapp-440/600/732.png`
+- `image`-Feld überschreibt das Inline-SVG-Visual (`visual`). Die SVGs sind nur noch Fallback, gezeichnet in der Swiss-Palette (`COLORS` = ink/muted/paper/subtle/accent, eckig, ohne Schatten)
+- `sizes: '(min-width: 1100px) 620px, 100vw'`
+- `link` leer = kein Link; URL eintragen, sobald vorhanden
 
 ### Scroll-Reveal (`reveal.js`)
 - Elemente mit `[data-reveal]` faden beim ersten Sichtbarwerden ein (IntersectionObserver)
@@ -130,9 +146,7 @@ Footer          → anthrazite (dunkel)
 - E-Mail in `index.html` → **`florian@example.com` ersetzen**
 
 ### Back-to-top Button
-- Erscheint nach 400px Scroll
-- Royal Blue, Neobrutalism-Stil, 42px × 42px (Mobile) / 48px × 48px (Desktop)
-- Sanftes Ein-/Ausblenden via CSS opacity + transform
+- Erscheint nach 400px Scroll, 48×48px, eckig, Ink-Fläche, weißer Pfeil, `border: 3px solid #fff` (Kontrast auf dem dunklen Footer), Hover Indigo
 
 ### SEO & Social Sharing
 - Open-Graph- + Twitter-Meta-Tags in `index.html` (`og:title`, `og:image`, …) — `og:image` zeigt auf `/og-image.jpg` (liegt in `public/`, **nicht** in `src/assets/` — Vite verarbeitet `<meta content>`-Pfade nicht, nur `public/` wird 1:1 in den Build kopiert)
@@ -141,37 +155,51 @@ Footer          → anthrazite (dunkel)
 - `public/robots.txt` erlaubt vollständiges Crawling; kein `sitemap.xml`, solange keine Domain feststeht
 
 ### Barrierefreiheit
-- Skip-Link (`.skip-link` in `base.css`) springt zu `id="main"` auf dem `<main class="page-cards">`-Wrapper
-- Globaler `:focus-visible`-Ring nutzt `--color-warm-orange-text` (nicht das helle `--color-warm-orange` — das schafft nur 2.0–2.3:1 auf Cream/Weiß, unter dem 3:1-Minimum für UI-Komponenten). Ausnahme: `.footer-logo:focus-visible` auf dem dunklen Footer nutzt das helle Orange zurück (6.3:1 dort vs. nur 2.6:1 mit der dunklen Variante). `.nav-links a` hat einen eigenen Border+Shadow-Fokus statt des globalen Rings
-- `<h2 class="sr-only">` vor dem Services-Grid, damit die Heading-Hierarchie nicht von h1 direkt zu h3 springt
-- Touch-Ziele: `.nav-hamburger` hat `min-width/height: 44px` (Klickfläche über Padding, der sichtbare Chevron bleibt klein) — Apple-HIG-Richtwert für Standard-Touch-Ziele
-- Geprüft mit axe-core (0 Violations) und Lighthouse (Accessibility 100) — **Hinweis:** Der Audit war vor der Orange-Kontrast-Korrektur (s. o.); axe-core prüft `:hover`/`:focus-visible`-Zustände oft nicht automatisch mit, daher hat der 0-Violations-Stand das Problem nicht gefangen
+- Geprüft (Okt. 2026) mit **axe-core 4.10** (WCAG 2.0/2.1/2.2 A+AA + Best Practices) auf allen drei Seiten bei 375 und 1440px: **0 Verstöße**
+- Skip-Link (`.skip-link`) springt zu `<main id="main">` (auf allen Seiten)
+- Fokusring Indigo (6.3:1 auf Weiß); im Footer weiß (Indigo auf Ink nur 2.8:1)
+- `html { scroll-padding-top }` = Header-Höhe → per Tab fokussierte Elemente und Anker-Ziele landen nie unter dem Sticky-Header (WCAG 2.4.11)
+- Hero-Wortanimation: Pause-Schalter (WCAG 2.2.2), `prefers-reduced-motion` stoppt sie, Screenreader lesen einen ganzen Satz statt der Wortliste
+- Abschnitts-H2 sichtbar (01/02/03), die großen Ziffern sind `aria-hidden`
+- Formular: sichtbare `<label>`s, Hinweis „Alle Felder sind Pflichtfelder“, `autocomplete`, Statusmeldungen per `aria-live`, Datenschutz-Hinweis unter dem Button
+- Touch-Ziele ≥ 44px (Nav-Links, Chevron, `.square-link`, Logo, Footer-Links, Pause-Button); Buttons 52px, Menüzeilen 56px
+- Kontraste: muted/Weiß 7.6, Weiß/Indigo 6.3, Weiß/Indigo-dark 7.9, footer-muted/Ink 12.0, muted/subtle 6.9
+- Escape schließt das mobile Menü; geschlossenes Menü ist per `visibility: hidden` nicht fokussierbar
+
+### Rechtliches (Impressum / Datenschutz)
+- Eigene Seiten im gleichen Stil, Header mit „← Startseite“, Footer-Links auf allen Seiten (`.footer-links`, `aria-current="page"` auf der aktiven Seite), `noindex`
+- **Kein Cookie-Banner nötig:** keine Cookies, kein Local Storage, kein Tracking, keine Drittanbieter beim Seitenaufruf (Schrift self-hosted). Das steht so in der Datenschutzerklärung — **wenn sich das ändert (Analytics, Embeds, YouTube, Google Fonts, Local Storage …), Datenschutzerklärung anpassen und ggf. Consent-Banner einbauen**
+- Gelb markierte Platzhalter `<mark class="todo">` müssen vor Go-Live ersetzt werden (siehe TODOs)
+- Texte sind ein sorgfältiger Entwurf, **keine Rechtsberatung**
 
 ### Cursor (`cursorEffects.js`)
-- Bewusst **Standard-Systemcursor**, kein Custom-Cursor — mehrere Design-Varianten (Diamant, Winkel, Blitz, rotierende Scheibe/Stern) wurden ausprobiert und wieder verworfen; `cursorEffects.js` beschränkt sich aktuell auf den Hero-Tilt-Effekt
+- Bewusst **Standard-Systemcursor**, kein Custom-Cursor — mehrere Varianten wurden ausprobiert und verworfen. `cursorEffects.js` enthält nur noch den Hero-Tilt und ist seit dem Swiss-Redesign **deaktiviert** (nicht in `main.js` eingebunden)
 - Falls ein Custom-Cursor zurückkommen soll: Positions-Tracking über ein äußeres `position:fixed`-Element (`transform: translate(x,y)` bei `mousemove`, kein CSS-Transition darauf — sonst hinkt es der Maus hinterher) + Form/Farbe/Animation in einem Kind-Element, das frei transitionieren darf. Für animierte Formen (z. B. Rotation) geht das nur so, **nicht** über natives `cursor: url()` (Cursor-Bilder sind statisch)
 
 ### Responsive Bilder
-- Hero-Foto (`collage.png`) und alle Projekt-Mockups (`rechner-*.jpg`, `generator-*.jpg`, `dock-*.jpg`, `lernapp-*.png`) haben `srcset`/`sizes` (Lernapp bis 670px, da das Quell-Mockup nur 1078px breit ist)
+- Hero-Porträt (`sketch.png`) und alle Projekt-Mockups (`rechner-*.jpg`, `generator-*.jpg`, `dock-*.jpg`, `lernapp-*.png`) haben `srcset`/`sizes` (Lernapp bis 670px, da das Quell-Mockup nur 1078px breit ist)
 - Bilder in JS-Dateien (z. B. `projects.js`) **müssen** als ES-Modul-Imports eingebunden werden (`import x from '../assets/images/x.jpg'`), nicht als reine String-Pfade — sonst kopiert Vite sie beim Build nicht mit und sie 404en in Produktion
-- Service-Icons (`Erde.png`, `Philo.png`, `Digital.png`) sind auf 160px begrenzt (werden bei 56px angezeigt) — beim Ersetzen nicht wieder auf 1000px+ Rohgröße hochladen
+- Service-Icons (`Erde.png`, `Philo.png`, `Digital.png`) sind seit dem Swiss-Redesign nicht mehr im Markup, die Dateien liegen aber noch in `assets/images/`
 - Letzter Lighthouse-Mobile-Audit (Production-Build via `vite preview`): Performance 92, Accessibility 100, Best Practices 100, SEO 100
 
 ---
 
 ## Offene TODOs (vor Go-Live)
 
-1. **E-Mail** in `index.html` ersetzen: `florian@example.com` → echte Adresse
-2. **Formspree** einrichten: `src/components/contact.js` → `YOUR_FORM_ID` ersetzen
-3. **Projekt-Links** in `src/components/projects.js` eintragen (`link`-Feld), sobald die Projekte online sind
-4. **Optional:** echte Screenshots statt SVG-Visuals (`image`-Feld in `projects.js`)
+1. **E-Mail** ersetzen: `florian@example.com` → echte Adresse (in `index.html`, `impressum.html`, `datenschutz.html`)
+2. **Anschrift** im Impressum + Datenschutz eintragen (gelbe `<mark class="todo">`-Platzhalter) — Pflichtangabe nach § 5 DDG
+3. **Hoster** in `datenschutz.html` (Abschnitt 3) eintragen: Name + Anschrift (Uberspace?) und Speicherdauer der Logfiles, AV-Vertrag abschließen
+4. **Formspree** einrichten: `src/components/contact.js` → `YOUR_FORM_ID` ersetzen; in `datenschutz.html` (Abschnitt 4) die Grundlage der US-Übermittlung prüfen und eintragen (DPF-Zertifizierung bzw. Standardvertragsklauseln)
+5. **Projekt-Links** in `src/components/projects.js` eintragen (`link`-Feld), sobald die Projekte online sind
+6. **`og-image.jpg`** (`public/`) zeigt noch den alten Neobrutalism-Look → neu im Swiss Style erstellen
+7. Nach dem Ersetzen: `grep -rn 'class="todo"\|example.com\|YOUR_FORM_ID' *.html src` muss leer sein
 
 ---
 
 ## Wichtige Entscheidungen
 
-- **Kein Cookie-Banner nötig** — kein Analytics, keine Ads, keine externen Fonts via CDN. Sobald Analytics eingebunden wird → Klaro (Open Source) empfohlen oder Matomo (DSGVO-konform ohne Banner)
-- **Keine Google Fonts geladen**: `--font-family` nennt 'Inter' nur als Wunsch-Font in der Stack-Liste, es gibt aber keinen CDN-Link im HTML — die Seite läuft auf System-Fonts. Kein DSGVO-Risiko hier, aber falls 'Inter' doch geladen werden soll: self-hosten, nicht per CDN-Link
+- **Kein Cookie-Banner nötig** — kein Analytics, keine Ads, keine externen Fonts via CDN (Archivo ist self-hosted). Sobald Analytics eingebunden wird → Klaro (Open Source) empfohlen oder Matomo (DSGVO-konform ohne Banner)
+- **Archivo self-hosted** als woff2 in `src/assets/fonts/` (bewusst kein npm-Paket: ein Bare-Import in CSS funktioniert nur über Vite, auf anderen Servern fiel die Schrift sonst still auf die breitere Ersatzschrift zurück). Niemals per Google-Fonts-Link einbinden
 - **Kein Framework**: Bewusste Entscheidung für Vanilla JS — einfacher zu warten, kein Dependency-Risiko
 - **Mobile-first CSS**: Alle Styles beginnen mit Mobile, Desktop via `min-width` Media Queries
 
