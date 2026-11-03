@@ -126,7 +126,8 @@ Footer          → anthrazite (dunkel)
 - Respektiert `prefers-reduced-motion`; Stagger via `--reveal-delay` (Service-Cards)
 
 ### Kontaktformular (`contact.js`)
-- Formspree-Integration → **`YOUR_FORM_ID` ersetzen**
+- Formspree-Integration → **`YOUR_FORM_ID` ersetzen**. Solange der Platzhalter drinsteht, sendet das Formular nicht, sondern verweist auf die E-Mail
+- Honeypot-Feld `_gotcha` (unsichtbar) gegen Spam-Bots — Formspree verwirft Einsendungen, bei denen es ausgefüllt ist
 - E-Mail in `index.html` → **`florian@example.com` ersetzen**
 
 ### Back-to-top Button
@@ -136,7 +137,7 @@ Footer          → anthrazite (dunkel)
 
 ### SEO & Social Sharing
 - Open-Graph- + Twitter-Meta-Tags in `index.html` (`og:title`, `og:image`, …) — `og:image` zeigt auf `/og-image.jpg` (liegt in `public/`, **nicht** in `src/assets/` — Vite verarbeitet `<meta content>`-Pfade nicht, nur `public/` wird 1:1 in den Build kopiert)
-- `og:url` ist bewusst leer — sobald die Seite eine feste Domain hat, hier + als `<link rel="canonical">` eintragen
+- Domain: `https://flomat.uber.space/` — steht in `og:url`, `og:image`, `<link rel="canonical">` und JSON-LD `url`. Bei Domainwechsel alle vier anpassen
 - JSON-LD (`Person`-Schema) im `<head>` für Rich-Snippets
 - `public/robots.txt` erlaubt vollständiges Crawling; kein `sitemap.xml`, solange keine Domain feststeht
 
@@ -144,6 +145,8 @@ Footer          → anthrazite (dunkel)
 - Skip-Link (`.skip-link` in `base.css`) springt zu `id="main"` auf dem `<main class="page-cards">`-Wrapper
 - Globaler `:focus-visible`-Ring nutzt `--color-warm-orange-text` (nicht das helle `--color-warm-orange` — das schafft nur 2.0–2.3:1 auf Cream/Weiß, unter dem 3:1-Minimum für UI-Komponenten). Ausnahme: `.footer-logo:focus-visible` auf dem dunklen Footer nutzt das helle Orange zurück (6.3:1 dort vs. nur 2.6:1 mit der dunklen Variante). `.nav-links a` hat einen eigenen Border+Shadow-Fokus statt des globalen Rings
 - `<h2 class="sr-only">` vor dem Services-Grid, damit die Heading-Hierarchie nicht von h1 direkt zu h3 springt
+- Hero-H1: Die Wortliste ist `aria-hidden`, Screenreader lesen stattdessen einen `sr-only`-Satz (sonst würden alle 7 Wörter inkl. Duplikat vorgelesen)
+- Mobiles Menü schließt per **Escape**, Fokus springt zurück auf den Pfeil-Button
 - Touch-Ziele: `.nav-hamburger` hat `min-width/height: 44px` (Klickfläche über Padding, der sichtbare Chevron bleibt klein) — Apple-HIG-Richtwert für Standard-Touch-Ziele
 - Geprüft mit axe-core (0 Violations) und Lighthouse (Accessibility 100) — **Hinweis:** Der Audit war vor der Orange-Kontrast-Korrektur (s. o.); axe-core prüft `:hover`/`:focus-visible`-Zustände oft nicht automatisch mit, daher hat der 0-Violations-Stand das Problem nicht gefangen
 
@@ -152,7 +155,9 @@ Footer          → anthrazite (dunkel)
 - Falls ein Custom-Cursor zurückkommen soll: Positions-Tracking über ein äußeres `position:fixed`-Element (`transform: translate(x,y)` bei `mousemove`, kein CSS-Transition darauf — sonst hinkt es der Maus hinterher) + Form/Farbe/Animation in einem Kind-Element, das frei transitionieren darf. Für animierte Formen (z. B. Rotation) geht das nur so, **nicht** über natives `cursor: url()` (Cursor-Bilder sind statisch)
 
 ### Responsive Bilder
-- Hero-Foto (`collage.png`) und alle Projekt-Mockups (`rechner-*.jpg`, `generator-*.jpg`, `dock-*.jpg`, `lernapp-*.png`) haben `srcset`/`sizes` (Lernapp bis 670px, da das Quell-Mockup nur 1078px breit ist)
+- Hero-Zeichnung (`sketch*.webp`) und alle Projekt-Mockups (`rechner-*.webp`, `generator-*.webp`, `dock-*.webp`, `lernapp-*.webp`) haben `srcset`/`sizes`
+- **Alle ausgelieferten Bilder sind WebP** (mit PIL erzeugt): Sketch verlustfrei (Strichzeichnung + Transparenz), Fotos/Mockups `quality=80–85`. Build sank dadurch von 2,9 MB auf ~1 MB. Neue Bilder ebenfalls als WebP einbinden
+- Ungenutzte Rohbilder im Ordner (`FLO.png`, `Projekt1–4.jpg`, `florian*.png`, `collage*.png` …) werden von Vite nicht gebündelt, blähen aber das Repo auf (~13 MB)
 - Bilder in JS-Dateien (z. B. `projects.js`) **müssen** als ES-Modul-Imports eingebunden werden (`import x from '../assets/images/x.jpg'`), nicht als reine String-Pfade — sonst kopiert Vite sie beim Build nicht mit und sie 404en in Produktion
 - Service-Icons (`Erde.png`, `Philo.png`, `Digital.png`) sind auf 160px begrenzt (werden bei 56px angezeigt) — beim Ersetzen nicht wieder auf 1000px+ Rohgröße hochladen
 - Letzter Lighthouse-Mobile-Audit (Production-Build via `vite preview`): Performance 92, Accessibility 100, Best Practices 100, SEO 100

@@ -31,6 +31,7 @@
     "@context": "https://schema.org",
     "@type": "Person",
     "name": "Florian Matthias",
+    "url": "https://flomat.uber.space/",
     "jobTitle": "Lehrer für Geografie & Ethik",
     "description": "Lehrer für Geografie & Ethik aus Brandenburg mit Fokus auf digitale Bildung und kritisches Denken.",
     "address": {
@@ -81,7 +82,7 @@
       <div class="hero-inner">
         <div class="hero-text">
           <p class="hero-name">Hi, ich bin Florian.</p>
-          <h1>Ich bin<br><span class="hero-animate"><span class="hero-animate-track"><span class="hero-animate-word">Lehrer.</span><span class="hero-animate-word">Begleiter.</span><span class="hero-animate-word">Berater.</span><span class="hero-animate-word">Organisator.</span><span class="hero-animate-word">KI-Enthusiast.</span><span class="hero-animate-word">Designer.</span><span class="hero-animate-word">Lehrer.</span></span></span></h1>
+          <h1>Ich bin<br><span class="sr-only">Lehrer, Begleiter, Berater, Organisator, KI-Enthusiast und Designer.</span><span class="hero-animate" aria-hidden="true"><span class="hero-animate-track"><span class="hero-animate-word">Lehrer.</span><span class="hero-animate-word">Begleiter.</span><span class="hero-animate-word">Berater.</span><span class="hero-animate-word">Organisator.</span><span class="hero-animate-word">KI-Enthusiast.</span><span class="hero-animate-word">Designer.</span><span class="hero-animate-word">Lehrer.</span></span></span></h1>
           <p class="hero-desc">Lehrer für Geografie & Ethik aus Brandenburg — mit Leidenschaft für digitale Bildung, kritisches Denken und echte Lernfreude.</p>
           <div class="hero-cta">
             <a href="#contact" class="btn btn-outline btn-hero-contact">Kontakt aufnehmen</a>
@@ -89,8 +90,8 @@
         </div>
         <div class="hero-image">
           <img
-            src="./src/assets/images/sketch.png"
-            srcset="./src/assets/images/sketch-480.png 480w, ./src/assets/images/sketch-700.png 700w, ./src/assets/images/sketch.png 1040w"
+            src="./src/assets/images/sketch.webp"
+            srcset="./src/assets/images/sketch-480.webp 480w, ./src/assets/images/sketch-700.webp 700w, ./src/assets/images/sketch.webp 1040w"
             sizes="(min-width: 1200px) 520px, (min-width: 768px) 44vw, 80vw"
             alt="Florian Matthias"
             class="hero-photo-img"
@@ -168,6 +169,11 @@
             <div class="form-group">
               <label for="message" class="sr-only">Nachricht</label>
               <textarea id="message" name="message" placeholder="Nachricht" required maxlength="2000"></textarea>
+            </div>
+            <!-- Honeypot gegen Spam-Bots: für Menschen unsichtbar, Formspree verwirft Einsendungen mit Inhalt -->
+            <div class="sr-only" aria-hidden="true">
+              <label for="website">Nicht ausfüllen</label>
+              <input type="text" id="website" name="_gotcha" tabindex="-1" autocomplete="off">
             </div>
             <div class="form-footer">
               <button type="submit" class="btn btn-primary form-submit">Nachricht senden</button>

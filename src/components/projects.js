@@ -3,18 +3,18 @@
 // `link` leer lassen, solange es keine öffentliche URL gibt: der Button wird dann nicht gerendert.
 
 // Statische Imports, damit Vite die Mockups bündelt (hashed URLs, korrekt in dev + build).
-import rechner640 from '../assets/images/rechner-640.jpg'
-import rechner1280 from '../assets/images/rechner-1280.jpg'
-import rechner1920 from '../assets/images/rechner-1920.jpg'
-import generator640 from '../assets/images/generator-640.jpg'
-import generator1280 from '../assets/images/generator-1280.jpg'
-import generator1920 from '../assets/images/generator-1920.jpg'
-import dock640 from '../assets/images/dock-640.jpg'
-import dock1280 from '../assets/images/dock-1280.jpg'
-import dock1920 from '../assets/images/dock-1920.jpg'
-import lernapp440 from '../assets/images/lernapp-440.png'
-import lernapp600 from '../assets/images/lernapp-600.png'
-import lernapp732 from '../assets/images/lernapp-732.png'
+import rechner640 from '../assets/images/rechner-640.webp'
+import rechner1280 from '../assets/images/rechner-1280.webp'
+import rechner1920 from '../assets/images/rechner-1920.webp'
+import generator640 from '../assets/images/generator-640.webp'
+import generator1280 from '../assets/images/generator-1280.webp'
+import generator1920 from '../assets/images/generator-1920.webp'
+import dock640 from '../assets/images/dock-640.webp'
+import dock1280 from '../assets/images/dock-1280.webp'
+import dock1920 from '../assets/images/dock-1920.webp'
+import lernapp440 from '../assets/images/lernapp-440.webp'
+import lernapp600 from '../assets/images/lernapp-600.webp'
+import lernapp732 from '../assets/images/lernapp-732.webp'
 
 // Baut srcset/sizes aus vorgenerierten Bildern in aufsteigender Breite.
 function responsiveImage(sources, alt, width, height) {

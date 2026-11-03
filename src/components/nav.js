@@ -58,6 +58,14 @@ export function initNav() {
   // Close on link click
   mobileLinks.forEach(link => link.addEventListener('click', closeMenu))
 
+  // Escape schließt das Menü und gibt den Fokus an den Pfeil-Button zurück
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && hamburger.classList.contains('is-open')) {
+      closeMenu()
+      hamburger.focus()
+    }
+  })
+
   // Close on outside click
   document.addEventListener('click', (e) => {
     if (!e.target.closest('#nav')) {
