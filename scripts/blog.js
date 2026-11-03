@@ -1,6 +1,6 @@
 // Blog-Generator: liest content/blog/*.md und schreibt daraus echte HTML-Seiten
 // nach blog/ (wird nicht committet, siehe .gitignore). Vite behandelt sie dann
-// wie jede andere Seite (CSS/JS werden gebündelt, Pfade gehasht).
+// wie jede andere Seite (CSS gebündelt, Pfade gehasht).
 //
 // Beitrag anlegen: neue Datei content/blog/mein-thema.md — der Dateiname wird
 // zur URL (/blog/mein-thema/). Kopf der Datei (Frontmatter):
@@ -64,12 +64,16 @@ export function loadPosts({ includeDrafts = false } = {}) {
     .sort((a, b) => b.date - a.date)
 }
 
-function head({ title, description, url, type = 'website' }) {
+// ── Bausteine im Swiss Style (gleiches Markup wie impressum.html) ─────────
+
+const ICON = `<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%234F46E5'/%3E%3Ctext x='16' y='23' text-anchor='middle' font-family='Arial,sans-serif' font-size='19' font-weight='800' fill='%23FFFFFF'%3EF.%3C/text%3E%3C/svg%3E">`
+
+function head({ title, description, url, type = 'website', extra = '' }) {
   return `<meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="${esc(description)}">
-  <meta name="theme-color" content="#2A2A2A">
-  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23FF9019'/%3E%3Ctext x='16' y='23' text-anchor='middle' font-family='sans-serif' font-size='19' font-weight='900' fill='%232A2A2A'%3EF.%3C/text%3E%3C/svg%3E">
+  <meta name="theme-color" content="#0F172A">
+  ${ICON}
   <link rel="canonical" href="${SITE_URL}${url}">
   <link rel="alternate" type="application/rss+xml" title="Blog von Florian Matthias" href="/feed.xml">
   <meta property="og:type" content="${type}">
@@ -79,12 +83,47 @@ function head({ title, description, url, type = 'website' }) {
   <meta property="og:description" content="${esc(description)}">
   <meta property="og:image" content="${SITE_URL}/og-image.jpg">
   <meta property="og:locale" content="de_DE">
-  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:card" content="summary_large_image">${extra}
   <title>${esc(title)}</title>
   <link rel="stylesheet" href="/src/styles/main.css">`
 }
 
-function page({ headHtml, body }) {
+const ARROW_LEFT = '<svg class="btn-arrow" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M17 10H4M9 4.5L3.5 10 9 15.5" stroke="currentColor" stroke-width="2.5" stroke-linecap="square"/></svg>'
+
+function header({ backHref, backLabel }) {
+  return `<nav id="nav" aria-label="Hauptnavigation">
+    <div class="nav-inner">
+      <a href="/" class="nav-logo">
+        <span class="logo-mark" aria-hidden="true">F.</span>
+        <span class="nav-logo-text label">Florian</span>
+      </a>
+      <a href="${backHref}" class="nav-back label">
+        ${ARROW_LEFT}
+        ${backLabel}
+      </a>
+    </div>
+  </nav>`
+}
+
+function footer(current) {
+  const aria = key => key === current ? ' aria-current="page"' : ''
+  return `<footer>
+    <div class="container footer-inner">
+      <a href="/" class="footer-logo">
+        <span class="logo-mark" aria-hidden="true">F.</span>
+        <span class="label">Florian Matthias · Geografie &amp; Ethik</span>
+      </a>
+      <nav class="footer-links label" aria-label="Weitere Seiten">
+        <a href="/blog/"${aria('blog')}>Blog</a>
+        <a href="/impressum.html">Impressum</a>
+        <a href="/datenschutz.html">Datenschutz</a>
+      </nav>
+      <span class="footer-right label">&copy; ${new Date().getFullYear()} · Brandenburg</span>
+    </div>
+  </footer>`
+}
+
+function page({ headHtml, nav, body, current }) {
   return `<!DOCTYPE html>
 <!-- AUTOMATISCH ERZEUGT aus content/blog/ — Änderungen hier gehen verloren. -->
 <html lang="de">
@@ -92,92 +131,89 @@ function page({ headHtml, body }) {
   ${headHtml}
 </head>
 <body>
+
   <a href="#main" class="skip-link">Zum Inhalt springen</a>
-  <!-- @nav:blog -->
-  <main class="page-cards" id="main">
+
+  ${nav}
+
+  <main id="main" class="section">
 ${body}
-  <!-- @footer -->
   </main>
-  <!-- @backtotop -->
-  <script type="module" src="/src/page.js"></script>
+
+  ${footer(current)}
+
 </body>
 </html>
 `
 }
 
 function meta(post) {
-  const draft = post.draft ? '<span class="blog-draft">Entwurf</span>' : ''
-  return `<time datetime="${post.isoDate}">${dateFmt.format(post.date)}</time>
-          <span aria-hidden="true">·</span>
-          <span>${post.readingMinutes} Min. Lesezeit</span>${draft}`
+  const draft = post.draft ? ' · <span class="blog-draft">Entwurf</span>' : ''
+  return `<time datetime="${post.isoDate}">${dateFmt.format(post.date)}</time> · ${post.readingMinutes} Min. Lesezeit${draft}`
 }
-
-const tagList = tags => tags.length
-  ? `<div class="project-tags">${tags.map(t => `<span class="project-tag">${esc(t)}</span>`).join('')}</div>`
-  : ''
 
 function indexPage(posts) {
   const list = posts.length
     ? `<ol class="blog-list" role="list">
-${posts.map(p => `      <li class="blog-card" data-reveal>
-        <p class="blog-meta">${meta(p)}</p>
-        <h2><a href="/blog/${p.slug}/">${esc(p.title)}</a></h2>
-        ${p.description ? `<p class="blog-card-desc">${esc(p.description)}</p>` : ''}
-        ${tagList(p.tags)}
-      </li>`).join('\n')}
-    </ol>`
+${posts.map(p => `        <li class="panel blog-card">
+          <div class="panel-bar label">
+            <span>${meta(p)}</span>
+            ${p.tags.length ? `<span class="panel-bar-tags">${p.tags.map(esc).join(' · ')}</span>` : ''}
+          </div>
+          <div class="panel-body">
+            <h2><a href="/blog/${p.slug}/">${esc(p.title)}</a></h2>
+            ${p.description ? `<p>${esc(p.description)}</p>` : ''}
+            <span class="square-link label" aria-hidden="true">Weiterlesen</span>
+          </div>
+        </li>`).join('\n')}
+      </ol>`
     : `<p class="blog-empty">Hier erscheinen bald die ersten Beiträge — unregelmäßig, aber mit Herz.</p>`
 
   return page({
+    current: 'blog',
     headHtml: head({
-      title: 'Blog — Florian Matthias',
+      title: 'Blog · Florian',
       description: 'Gedanken aus dem Schulalltag: Geografie, Ethik, digitale Bildung und eigene Web-Projekte.',
       url: '/blog/'
     }),
-    body: `  <div class="section-card-wrap">
-    <header class="page-header">
-      <p class="section-eyebrow">Blog</p>
-      <h1>Notizen aus dem Klassenzimmer.</h1>
-      <p class="page-header-desc">Unregelmäßige Gedanken zu Geografie, Ethik, digitaler Bildung und den Tools, die ich nebenbei baue.
-        <a href="/feed.xml" class="page-header-feed">RSS-Feed abonnieren</a></p>
-    </header>
-  </div>
-  <div class="section-card-wrap">
-    <div class="page-body">
-    ${list}
-    </div>
-  </div>`
+    nav: header({ backHref: '/', backLabel: 'Startseite' }),
+    body: `    <div class="container blog">
+      <header class="section-head">
+        <h1>Blog</h1>
+      </header>
+      <p class="section-intro">Unregelmäßige Notizen aus dem Klassenzimmer — Geografie, Ethik, digitale Bildung und die Tools, die ich nebenbei baue. <a href="/feed.xml" class="blog-feed">RSS-Feed abonnieren</a></p>
+      ${list}
+    </div>`
   })
 }
 
 function postPage(post) {
   return page({
+    current: 'blog',
     headHtml: head({
-      title: `${post.title} — Florian Matthias`,
+      title: `${post.title} · Florian`,
       description: post.description || post.title,
       url: `/blog/${post.slug}/`,
-      type: 'article'
-    }) + `
-  <meta property="article:published_time" content="${post.isoDate}">`,
-    body: `  <div class="section-card-wrap">
-    <header class="page-header">
-      <a href="/blog/" class="page-back">← Alle Beiträge</a>
-      <p class="blog-meta">${meta(post)}</p>
-      <h1>${esc(post.title)}</h1>
-      ${post.description ? `<p class="page-header-desc">${esc(post.description)}</p>` : ''}
-      ${tagList(post.tags)}
-    </header>
-  </div>
-  <div class="section-card-wrap">
-    <article class="page-body prose">
+      type: 'article',
+      extra: `\n  <meta property="article:published_time" content="${post.isoDate}">`
+    }),
+    nav: header({ backHref: '/blog/', backLabel: 'Alle Beiträge' }),
+    body: `    <article class="container legal blog-post">
+      <header class="section-head blog-post-head">
+        <p class="label blog-meta">${meta(post)}</p>
+        <h1>${esc(post.title)}</h1>
+        ${post.description ? `<p class="legal-lead">${esc(post.description)}</p>` : ''}
+        ${post.tags.length ? `<p class="label blog-tags">${post.tags.map(esc).join(' · ')}</p>` : ''}
+      </header>
+      <div class="prose">
 ${post.html}
-      <p class="prose-end"><a href="/blog/" class="btn btn-outline">← Alle Beiträge</a></p>
-    </article>
-  </div>`
+      </div>
+      <p class="blog-back"><a href="/blog/" class="square-link label">Alle Beiträge</a></p>
+    </article>`
   })
 }
 
-// Schreibt blog/index.html + blog/<slug>/index.html, gibt die Liste der Seiten zurück
+// Schreibt blog/index.html + blog/<slug>/index.html, gibt die Beiträge zurück
 export function writeBlog({ includeDrafts = false } = {}) {
   const posts = loadPosts({ includeDrafts })
   fs.rmSync(OUT_DIR, { recursive: true, force: true })
@@ -212,7 +248,7 @@ ${items}
 }
 
 export function sitemapXml(posts) {
-  const urls = ['/', '/blog/', ...posts.map(p => `/blog/${p.slug}/`), '/impressum.html', '/datenschutz.html']
+  const urls = ['/', '/blog/', ...posts.map(p => `/blog/${p.slug}/`)]
   return `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 ${urls.map(u => `  <url><loc>${SITE_URL}${u}</loc></url>`).join('\n')}

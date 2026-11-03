@@ -1,31 +1,18 @@
 :root {
-  /* Original palette */
-  --color-royal-blue:   #003D82;
-  --color-warm-orange:  #FF9019;
-  --color-anthrazite:   #2A2A2A;
-  --color-cream:        #F5F1EB;
-  --color-white:        #FFFFFF;
-  --color-light-border: #E0DDD8;
+  /* Farben — Swiss Style: Weiß, Tinte, ein Akzent */
+  --color-ink:          #0F172A;  /* Text, Rahmen, Kopfbalken, Footer */
+  --color-muted:        #475569;  /* Sekundärtext, Labels (7.5:1 auf Weiß) */
+  --color-paper:        #FFFFFF;
+  --color-subtle:       #F1F5F9;  /* nur Bild-Bühne der Lernapp */
+  --color-accent:       #4F46E5;  /* Indigo – Fläche mit weißem Text ODER Text auf Weiß (6.3:1) */
+  --color-accent-dark:  #4338CA;  /* Hover */
+  --color-footer-muted: #CBD5E1;  /* Sekundärtext auf Ink (12:1) */
 
-  /* --color-warm-orange ist als Fläche (Buttons, Badges, Shadows) mit
-     anthrazite Text top — aber als Vordergrundfarbe (Text, Fokusring, Icons)
-     auf Cream/Weiß nur 2.0–2.3:1 Kontrast (WCAG braucht 4.5:1, 3:1 bei
-     großem Text). Für alle Text-/UI-auf-hellem-Grund-Fälle diese dunklere
-     Variante nutzen — 4.9:1 auf Cream, 5.5:1 auf Weiß, 3.5:1 auf Lavendel. */
-  --color-warm-orange-text: #A8500A;
-
-  /* Chorke palette additions */
-  --color-lavender:     #D8C8F0;
-  --color-card-yellow:  #F0E040;
-  --color-card-green:   #4DDC7A;
-  --color-card-pink:    #EAD4F8;
-  --hero-gradient: linear-gradient(135deg, var(--color-cream) 0%, var(--color-lavender) 100%);
-
-  /* Typography */
-  --font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  --font-size-base: 1rem;
-  --font-size-sm: 0.875rem;
-  --font-size-xs: 0.75rem;
+  /* Typografie — Archivo wird self-hosted (siehe main.css), kein CDN */
+  --font-family: 'Archivo Variable', 'Helvetica Neue', Arial, sans-serif;
+  --font-size-base: 1.0625rem;  /* 17px */
+  --font-size-sm:   0.9375rem;  /* 15px */
+  --font-size-label: 0.8125rem; /* 13px */
 
   /* Spacing */
   --spacing-xs:  0.5rem;
@@ -35,18 +22,25 @@
   --spacing-xl:  3rem;
   --spacing-2xl: 5rem;
 
-  /* Nav */
-  --nav-height: 64px;
+  /* Layout */
+  --container-max: 1280px;
+  --gutter: clamp(16px, 4vw, 56px);
+  --grid-gap: 10px;
 
-  /* Neobrutalism */
-  --radius:       6px;
-  --radius-input: 12px;
-  --radius-card:  20px;
-  --border-width: 2px;
-  --shadow-sm: 3px 3px 0 var(--color-anthrazite);
-  --shadow-md: 5px 5px 0 var(--color-anthrazite);
-  --shadow-lg: 7px 7px 0 var(--color-anthrazite);
+  /* Header-Höhe im Ruhezustand (Padding + 44px Klickfläche + 6px Unterkante).
+     Der Hero zieht sie ab, damit Header + Hero genau einen Viewport füllen. */
+  --nav-h: 78px;
+
+  /* Rahmen — eckig, keine Schatten */
+  --radius: 0;
+  --border:      3px solid var(--color-ink);  /* Karten, Buttons, Formular */
+  --border-thin: 2px solid var(--color-ink);  /* Inputs, Unterlinien */
+  --rule-thick:  6px solid var(--color-ink);  /* Header-Unterkante, Abschnittsanfang */
 
   /* Transitions */
   --transition: 0.15s ease;
+}
+
+@media (min-width: 768px) {
+  :root { --nav-h: 86px; }
 }

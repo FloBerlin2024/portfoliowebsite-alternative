@@ -1,5 +1,3 @@
-@import url('variables.css');
-
 *, *::before, *::after {
   margin: 0;
   padding: 0;
@@ -8,51 +6,79 @@
 
 html {
   scroll-behavior: smooth;
+  /* clip statt hidden — sonst wird body zum Scroll-Container und sticky bricht */
   overflow-x: clip;
 }
 
 body {
   font-family: var(--font-family);
   font-size: var(--font-size-base);
-  line-height: 1.6;
-  color: var(--color-anthrazite);
-  background-color: var(--color-anthrazite);
+  line-height: 1.5;
+  color: var(--color-ink);
+  background-color: var(--color-paper);
   overflow-x: clip;
   width: 100%;
+  font-variant-numeric: tabular-nums;
+  -webkit-font-smoothing: antialiased;
 }
 
+@media (min-width: 1024px) {
+  body { font-size: 1.125rem; } /* 18px */
+}
+
+/* Display — schmale Großbuchstaben */
 h1, h2, h3, h4 {
   font-weight: 800;
-  line-height: 1.05;
-  letter-spacing: -0.02em;
+  text-transform: uppercase;
+  line-height: 0.9;
+  letter-spacing: -0.005em;
 }
 
-/* Mobile first — scale up */
-h1 { font-size: clamp(2.8rem, 8vw, 5.5rem); }
-h2 { font-size: clamp(1.6rem, 5vw, 2.5rem); margin-bottom: var(--spacing-lg); }
-h3 { font-size: 1.1rem; margin-bottom: var(--spacing-sm); letter-spacing: -0.01em; }
+h1 {
+  font-size: clamp(64px, 10vw, 148px);
+  font-stretch: 62.5%;
+  line-height: 0.86;
+}
+
+h2 {
+  font-size: clamp(36px, 5vw, 56px);
+  font-stretch: 62.5%;
+}
+
+h3 {
+  font-size: clamp(30px, 2.6vw, 34px);
+  font-stretch: 75%;
+  line-height: 0.95;
+}
 
 p {
-  line-height: 1.7;
-  margin-bottom: var(--spacing-md);
+  line-height: 1.5;
 }
 
 a {
   color: inherit;
   text-decoration: none;
-  transition: var(--transition);
+  transition: color var(--transition), background-color var(--transition), border-color var(--transition);
 }
 
-section {
-  width: 100%;
-  padding: 0;
+img {
+  display: block;
+  max-width: 100%;
 }
 
-/* Mobile padding */
+/* Label-Stil — Nav, Kopfbalken, Eyebrows, Formular-Labels */
+.label {
+  font-size: var(--font-size-label);
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  line-height: 1.3;
+}
+
 .container {
-  max-width: 1100px;
+  max-width: var(--container-max);
   margin: 0 auto;
-  padding: var(--spacing-xl) var(--spacing-md);
+  padding-inline: var(--gutter);
 }
 
 .sr-only {
@@ -67,29 +93,24 @@ section {
   border: 0;
 }
 
-/* Sichtbarer Fokus-Ring für Tastatur-Navigation — konsistent über alle interaktiven Elemente.
-   Nutzt die dunklere Text-Variante von Orange: das helle --color-warm-orange
-   schafft nur 2.0–2.3:1 auf Cream/Weiß (unter dem 3:1-Minimum für
-   UI-Komponenten) — die meisten fokussierbaren Elemente sitzen auf hellem
-   Grund, daher hier die kontraststarke Variante (4.9:1 auf Cream). */
+/* Fokusring global — Indigo hat 6.3:1 auf Weiß */
 a:focus-visible,
 button:focus-visible,
 input:focus-visible,
 textarea:focus-visible {
-  outline: 3px solid var(--color-warm-orange-text);
-  outline-offset: 3px;
-  border-radius: var(--radius);
+  outline: 3px solid var(--color-accent);
+  outline-offset: 2px;
 }
 
-/* Nav-Links haben ihren eigenen Border+Shadow-Fokusindikator — kein doppelter Ring */
-.nav-links a:focus-visible {
-  outline: none;
+/* Auf dunklem Footer-Grund wäre Indigo zu schwach (2.8:1) → Weiß */
+footer a:focus-visible {
+  outline-color: var(--color-paper);
 }
 
-/* Ausnahme: Footer-Logo sitzt auf dunklem Anthrazite-Grund — dort schafft
-   umgekehrt die dunkle Text-Variante nur 2.6:1, das helle Orange 6.3:1 */
-.footer-logo:focus-visible {
-  outline-color: var(--color-warm-orange);
+/* Back-to-top liegt mal auf Weiß, mal auf dem Footer: Ring + Indigo-Füllung,
+   so bleibt der Fokus auf beiden Gründen sichtbar */
+.back-to-top:focus-visible {
+  background-color: var(--color-accent);
 }
 
 .skip-link {
@@ -97,31 +118,19 @@ textarea:focus-visible {
   top: -100px;
   left: 10px;
   z-index: 200;
-  background-color: var(--color-warm-orange);
-  color: var(--color-anthrazite);
-  font-weight: 800;
-  font-size: var(--font-size-sm);
+  background-color: var(--color-accent);
+  color: var(--color-paper);
+  font-size: var(--font-size-label);
+  font-weight: 700;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
   padding: 0.85rem 1.4rem;
-  border: var(--border-width) solid var(--color-anthrazite);
-  border-radius: var(--radius);
-  box-shadow: var(--shadow-md);
+  border: var(--border);
   transition: top 0.2s ease;
 }
 
 .skip-link:focus-visible {
   top: 10px;
-  outline: none;
-}
-
-/* Desktop padding */
-@media (min-width: 768px) {
-  .container {
-    padding: var(--spacing-2xl) var(--spacing-lg);
-  }
-
-  h2 {
-    margin-bottom: var(--spacing-xl);
-  }
+  outline: 3px solid var(--color-accent);
+  outline-offset: 2px;
 }

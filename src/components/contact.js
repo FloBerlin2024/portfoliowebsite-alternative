@@ -14,7 +14,7 @@ export function initContact() {
     const message = form.elements.message.value.trim()
     const gotcha = form.elements._gotcha?.value ?? ''
 
-    // Solange Formspree nicht eingerichtet ist: ehrlich auf E-Mail verweisen statt Fehlversand
+    // Solange Formspree nicht eingerichtet ist: auf E-Mail verweisen statt Fehlversand
     if (FORMSPREE_ENDPOINT.includes('YOUR_FORM_ID')) {
       showMessage('Das Formular ist noch nicht freigeschaltet — schreib mir bitte direkt per E-Mail.', 'error', messageDiv)
       return

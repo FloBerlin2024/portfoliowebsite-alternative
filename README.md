@@ -1,6 +1,6 @@
 # Portfolio One-Pager
 
-Clean Neobrutalism portfolio for Florian Matthias.
+Swiss-Style portfolio for Florian Matthias (Vite + Vanilla JS).
 
 ## Setup
 

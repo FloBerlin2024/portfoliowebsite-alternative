@@ -1,24 +1,7 @@
 import { defineConfig } from 'vite'
 import fs from 'node:fs'
-import path from 'node:path'
-import { navHtml, footerHtml, backToTopHtml } from './scripts/partials.js'
+import { resolve } from 'node:path'
 import { writeBlog, rssXml, sitemapXml, CONTENT_DIR } from './scripts/blog.js'
-
-// Setzt Nav/Footer/Back-to-top in jede HTML-Seite ein (eine Quelle für alle Seiten)
-function partials() {
-  return {
-    name: 'partials',
-    transformIndexHtml: {
-      order: 'pre',
-      handler(html) {
-        return html
-          .replace(/<!-- @nav(?::(\w+))? -->/, (_, current) => navHtml(current))
-          .replace('<!-- @footer -->', footerHtml())
-          .replace('<!-- @backtotop -->', backToTopHtml())
-      }
-    }
-  }
-}
 
 // Erzeugt die Blog-Seiten aus content/blog/*.md, dazu feed.xml + sitemap.xml
 function blog() {
@@ -32,17 +15,18 @@ function blog() {
         build: {
           rollupOptions: {
             input: {
-              main: path.resolve('index.html'),
-              impressum: path.resolve('impressum.html'),
-              datenschutz: path.resolve('datenschutz.html'),
-              blog: path.resolve('blog/index.html'),
-              ...Object.fromEntries(posts.map(p => [`blog-${p.slug}`, path.resolve(`blog/${p.slug}/index.html`)]))
+              main: resolve(__dirname, 'index.html'),
+              impressum: resolve(__dirname, 'impressum.html'),
+              datenschutz: resolve(__dirname, 'datenschutz.html'),
+              blog: resolve(__dirname, 'blog/index.html'),
+              ...Object.fromEntries(posts.map(p => [`blog-${p.slug}`, resolve(__dirname, `blog/${p.slug}/index.html`)]))
             }
           }
         }
       }
     },
     configureServer(server) {
+      // Dev-Server: Beiträge bei jeder Änderung neu erzeugen und Seite neu laden
       server.watcher.add(CONTENT_DIR)
       const rebuild = file => {
         if (!file.startsWith(CONTENT_DIR)) return
@@ -58,10 +42,10 @@ function blog() {
     generateBundle() {
       this.emitFile({ type: 'asset', fileName: 'feed.xml', source: rssXml(posts) })
       this.emitFile({ type: 'asset', fileName: 'sitemap.xml', source: sitemapXml(posts) })
-      // Warnung, solange Platzhalter (<mark class="todo">) in Impressum/Datenschutz stehen
+      // Warnung, solange Platzhalter (<mark class="todo">) in den Rechtstexten stehen
       for (const name of ['impressum.html', 'datenschutz.html']) {
-        if (fs.readFileSync(name, 'utf8').includes('class="todo"')) {
-          this.warn(`${name} enthält noch Platzhalter [ … ] — vor dem Veröffentlichen ausfüllen!`)
+        if (fs.readFileSync(resolve(__dirname, name), 'utf8').includes('class="todo"')) {
+          this.warn(`${name} enthält noch gelbe Platzhalter — vor dem Veröffentlichen ausfüllen!`)
         }
       }
     }
@@ -69,7 +53,7 @@ function blog() {
 }
 
 export default defineConfig({
-  plugins: [partials(), blog()],
+  plugins: [blog()],
   server: {
     port: 3000,
     open: true

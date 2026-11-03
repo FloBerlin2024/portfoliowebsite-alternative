@@ -1,3 +1,7 @@
+// DEAKTIVIERT seit dem Swiss-Style-Redesign (Hero ist bewusst statisch) —
+// wird in main.js nicht mehr aufgerufen. Bei Bedarf dort wieder importieren
+// und die Tilt-Transform auf .hero-photo-img in layout.css ergänzen.
+//
 // Hero-Tilt — Signature-Effekt für Maus-Nutzer.
 // Nur bei echter Maus (pointer: fine) und ohne prefers-reduced-motion.
 // Cursor läuft bewusst auf Standard — kein Custom-Cursor.

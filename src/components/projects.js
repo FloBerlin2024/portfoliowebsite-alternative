@@ -23,22 +23,20 @@ function responsiveImage(sources, alt, width, height) {
   return {
     src: mid,
     srcset: `${small} ${widths[0]}w, ${mid} ${widths[1]}w, ${large} ${widths[2]}w`,
-    sizes: '(min-width: 768px) 50vw, 100vw',
+    sizes: '(min-width: 1100px) 620px, 100vw',
     alt,
     width,
     height
   }
 }
 
+// Swiss-Style-Palette (gleich wie variables.css)
 const COLORS = {
-  ink: '#2A2A2A',
+  ink: '#0F172A',
+  muted: '#475569',
   paper: '#FFFFFF',
-  cream: '#F5F1EB',
-  yellow: '#F0E040',
-  green: '#4DDC7A',
-  lavender: '#D8C8F0',
-  orange: '#FF9019',
-  blue: '#003D82'
+  subtle: '#F1F5F9',
+  accent: '#4F46E5'
 }
 
 const projects = [
@@ -82,58 +80,63 @@ export function initProjects() {
   if (!container) return
 
   const fragment = document.createDocumentFragment()
-  projects.forEach(project => fragment.appendChild(createProjectRow(project)))
+  projects.forEach((project, i) => fragment.appendChild(createProjectRow(project, i)))
   container.appendChild(fragment)
 }
 
-function createProjectRow(project) {
-  const row = document.createElement('article')
-  row.className = 'featured-project'
-  row.setAttribute('data-reveal', '')
+// Panel-Karte: Kopfbalken (Nummer | Tags) → Bild → Titel + Beschreibung
+function createProjectRow(project, index) {
+  const card = document.createElement('article')
+  card.className = 'panel project-card'
+  card.setAttribute('data-reveal', '')
 
-  const tags = project.tags
-    .map(tag => `<span class="project-tag">${tag}</span>`)
-    .join('')
+  const number = String(index + 1).padStart(2, '0')
 
   const media = project.image
     ? `<img src="${project.image.src}" srcset="${project.image.srcset}" sizes="${project.image.sizes}" alt="${project.image.alt}" width="${project.image.width}" height="${project.image.height}" loading="lazy" decoding="async">`
     : project.visual
 
-  const imageClass = project.fit === 'contain'
-    ? 'featured-project-image featured-project-image--stage'
-    : 'featured-project-image'
+  const mediaClass = project.fit === 'contain'
+    ? 'project-media project-media--stage'
+    : 'project-media'
 
   const cta = project.link
-    ? `<a href="${project.link}" class="btn btn-outline" target="_blank" rel="noopener noreferrer">Projekt ansehen →</a>`
+    ? `<a href="${project.link}" class="square-link label" target="_blank" rel="noopener noreferrer">Projekt ansehen<span class="sr-only"> (öffnet in neuem Tab)</span></a>`
     : ''
 
-  row.innerHTML = `
-    <div class="${imageClass}">${media}</div>
-    <div class="featured-project-text">
-      <div class="project-tags">${tags}</div>
+  card.innerHTML = `
+    <div class="panel-bar label">
+      <span>Projekt ${number}</span>
+      <span class="panel-bar-tags">${project.tags.join(' · ')}</span>
+    </div>
+    <div class="${mediaClass}">${media}</div>
+    <div class="panel-body">
       <h3>${project.title}</h3>
       <p>${project.description}</p>
       ${cta}
     </div>
   `
 
-  return row
+  return card
 }
 
-/* ── Inline-SVG-Visuals im Neobrutalism-Stil ─────────────────── */
+/* ── Inline-SVG-Visuals im Swiss Style ───────────────────────────
+   Nur als Fallback, falls ein Projekt kein `image` hat.
+   Flächen eckig (kein rx), Rahmen in Ink, keine Offset-Schatten. */
 
-// Karte mit hartem Offset-Schatten
-function card(x, y, w, h, fill, r = 14) {
+function box(x, y, w, h, fill, stroke = COLORS.ink) {
+  return `<rect x="${x}" y="${y}" width="${w}" height="${h}" fill="${fill}" stroke="${stroke}" stroke-width="4"/>`
+}
+
+function bar(x, y, w, label) {
   return `
-    <rect x="${x + 7}" y="${y + 7}" width="${w}" height="${h}" rx="${r}" fill="${COLORS.ink}"/>
-    <rect x="${x}" y="${y}" width="${w}" height="${h}" rx="${r}" fill="${fill}" stroke="${COLORS.ink}" stroke-width="3"/>`
+    <rect x="${x}" y="${y}" width="${w}" height="30" fill="${COLORS.ink}"/>
+    <text x="${x + 14}" y="${y + 20}" font-size="13" font-weight="700" letter-spacing="2" fill="${COLORS.paper}" font-family="inherit">${label}</text>`
 }
 
-function svgWrap(label, bg, content) {
+function svgWrap(label, content) {
   return `<svg viewBox="0 0 800 450" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="${label}" class="project-visual">
-    <rect width="800" height="450" fill="${bg}"/>
-    <circle cx="60" cy="390" r="26" fill="none" stroke="${COLORS.ink}" stroke-width="3" opacity="0.25"/>
-    <circle cx="748" cy="56" r="14" fill="${COLORS.ink}" opacity="0.15"/>
+    <rect width="800" height="450" fill="${COLORS.subtle}"/>
     ${content}
   </svg>`
 }
@@ -143,80 +146,70 @@ function rechnerVisual() {
   let buttons = ''
   keys.forEach((key, i) => {
     const bx = 286 + (i % 3) * 80
-    const by = 190 + Math.floor(i / 3) * 62
-    const fill = key === '5' ? COLORS.orange : COLORS.cream
+    const by = 196 + Math.floor(i / 3) * 62
+    const active = key === '5'
     buttons += `
-      <rect x="${bx + 4}" y="${by + 4}" width="64" height="46" rx="8" fill="${COLORS.ink}"/>
-      <rect x="${bx}" y="${by}" width="64" height="46" rx="8" fill="${fill}" stroke="${COLORS.ink}" stroke-width="3"/>
-      <text x="${bx + 32}" y="${by + 31}" text-anchor="middle" font-size="20" font-weight="800" fill="${COLORS.ink}" font-family="inherit">${key}</text>`
+      ${box(bx, by, 64, 46, active ? COLORS.accent : COLORS.paper)}
+      <text x="${bx + 32}" y="${by + 31}" text-anchor="middle" font-size="20" font-weight="800" fill="${active ? COLORS.paper : COLORS.ink}" font-family="inherit">${key}</text>`
   })
-  return svgWrap('TGS Rechner – Bedienoberfläche', COLORS.yellow, `
-    ${card(258, 52, 284, 340, COLORS.paper, 18)}
-    <rect x="282" y="78" width="236" height="76" rx="10" fill="${COLORS.cream}" stroke="${COLORS.ink}" stroke-width="3"/>
-    <text x="298" y="112" font-size="14" font-weight="700" fill="${COLORS.ink}" opacity="0.5" font-family="inherit">13 PUNKTE</text>
-    <text x="502" y="140" text-anchor="end" font-size="38" font-weight="900" fill="${COLORS.ink}" font-family="inherit">= 1,7</text>
+  return svgWrap('TGS Rechner – Bedienoberfläche', `
+    ${box(258, 52, 284, 346, COLORS.paper)}
+    ${bar(258, 52, 284, 'RECHNER')}
+    ${box(282, 100, 236, 76, COLORS.paper)}
+    <text x="298" y="130" font-size="13" font-weight="700" letter-spacing="2" fill="${COLORS.muted}" font-family="inherit">13 PUNKTE</text>
+    <text x="502" y="164" text-anchor="end" font-size="38" font-weight="800" fill="${COLORS.ink}" font-family="inherit">= 1,7</text>
     ${buttons}
-    ${card(560, 96, 130, 54, COLORS.orange, 27)}
-    <text x="625" y="130" text-anchor="middle" font-size="20" font-weight="900" fill="${COLORS.ink}" font-family="inherit">NOTE</text>
   `)
 }
 
 function generatorVisual() {
-  const rows = [
-    ['GRUPPE', COLORS.paper],
-    ['LOTTE', COLORS.paper],
-    ['VULKANE', COLORS.yellow]
-  ]
+  const rows = ['GRUPPE', 'LOTTE', 'VULKANE']
   let slots = ''
-  rows.forEach(([word, fill], i) => {
+  rows.forEach((word, i) => {
     const y = 108 + i * 84
+    const active = i === 2
     slots += `
-      ${card(190, y, 300, 62, fill, 10)}
-      <text x="218" y="${y + 40}" font-size="24" font-weight="900" letter-spacing="3" fill="${COLORS.ink}" font-family="inherit">${word}</text>`
+      ${box(190, y, 300, 62, active ? COLORS.accent : COLORS.paper)}
+      <text x="218" y="${y + 40}" font-size="24" font-weight="800" letter-spacing="3" fill="${active ? COLORS.paper : COLORS.ink}" font-family="inherit">${word}</text>`
   })
-  return svgWrap('Generatorenwebsite – Zufallsgenerator', COLORS.green, `
+  return svgWrap('Generatorenwebsite – Zufallsgenerator', `
     ${slots}
-    ${card(534, 158, 120, 120, COLORS.orange, 60)}
-    <path d="M594 186a32 32 0 1 1-27 15" fill="none" stroke="${COLORS.ink}" stroke-width="7" stroke-linecap="round"/>
-    <path d="M560 188l6 16 16-6z" fill="${COLORS.ink}"/>
+    ${box(534, 158, 120, 120, COLORS.ink)}
+    <path d="M594 190a28 28 0 1 1-24 14" fill="none" stroke="${COLORS.paper}" stroke-width="7" stroke-linecap="square"/>
+    <path d="M562 192l8 16 14-8z" fill="${COLORS.paper}"/>
   `)
 }
 
 function widgetdockVisual() {
-  const dockIcons = [COLORS.orange, COLORS.yellow, COLORS.green, COLORS.lavender]
   let dock = ''
-  dockIcons.forEach((fill, i) => {
-    dock += `<rect x="${316 + i * 48}" y="352" width="36" height="36" rx="9" fill="${fill}" stroke="${COLORS.ink}" stroke-width="3"/>`
+  ;[COLORS.accent, COLORS.ink, COLORS.paper, COLORS.paper].forEach((fill, i) => {
+    dock += box(316 + i * 48, 352, 36, 36, fill)
   })
-  return svgWrap('Widgetdock – Klassenzimmer-Widgets als Desktop-Overlay', COLORS.blue, `
-    ${card(146, 84, 210, 150, COLORS.paper, 16)}
-    <text x="180" y="130" font-size="15" font-weight="800" fill="${COLORS.ink}" opacity="0.45" font-family="inherit">FOKUS</text>
-    <text x="180" y="196" font-size="52" font-weight="900" fill="${COLORS.ink}" font-family="inherit">05:00</text>
-    ${card(432, 64, 110, 230, COLORS.cream, 16)}
-    <circle cx="487" cy="118" r="26" fill="${COLORS.orange}" stroke="${COLORS.ink}" stroke-width="3"/>
-    <circle cx="487" cy="180" r="26" fill="${COLORS.yellow}" stroke="${COLORS.ink}" stroke-width="3"/>
-    <circle cx="487" cy="242" r="26" fill="${COLORS.green}" stroke="${COLORS.ink}" stroke-width="3" opacity="0.35"/>
-    ${card(300, 338, 226, 64, COLORS.paper, 20)}
+  return svgWrap('Widgetdock – Klassenzimmer-Widgets als Desktop-Overlay', `
+    ${box(146, 84, 210, 150, COLORS.paper)}
+    ${bar(146, 84, 210, 'FOKUS')}
+    <text x="170" y="204" font-size="52" font-weight="800" fill="${COLORS.ink}" font-family="inherit">05:00</text>
+    ${box(432, 64, 110, 230, COLORS.paper)}
+    ${box(462, 92, 50, 50, COLORS.ink)}
+    ${box(462, 154, 50, 50, COLORS.accent)}
+    ${box(462, 216, 50, 50, COLORS.subtle)}
+    ${box(300, 338, 226, 64, COLORS.paper)}
     ${dock}
   `)
 }
 
 function designVisual() {
-  const swatches = [COLORS.orange, COLORS.yellow, COLORS.green, COLORS.blue]
   let row = ''
-  swatches.forEach((fill, i) => {
-    row += `
-      <rect x="${449 + i * 62}" y="273" width="50" height="50" rx="8" fill="${COLORS.ink}"/>
-      <rect x="${444 + i * 62}" y="268" width="50" height="50" rx="8" fill="${fill}" stroke="${COLORS.ink}" stroke-width="3"/>`
+  ;[COLORS.ink, COLORS.accent, COLORS.muted, COLORS.subtle].forEach((fill, i) => {
+    row += box(444 + i * 62, 268, 50, 50, fill)
   })
-  return svgWrap('Eigenes Design – Farb- und Typografie-System', COLORS.lavender, `
-    ${card(120, 90, 250, 270, COLORS.paper, 18)}
-    <text x="245" y="270" text-anchor="middle" font-size="130" font-weight="900" fill="${COLORS.ink}" font-family="inherit">Aa</text>
-    <rect x="156" y="304" width="178" height="12" rx="6" fill="${COLORS.orange}"/>
-    ${card(444, 96, 236, 118, COLORS.cream, 14)}
-    <text x="468" y="146" font-size="22" font-weight="900" fill="${COLORS.ink}" font-family="inherit">DESIGN-</text>
-    <text x="468" y="180" font-size="22" font-weight="900" fill="${COLORS.orange}" font-family="inherit">SYSTEM</text>
+  return svgWrap('Eigenes Design – Farb- und Typografie-System', `
+    ${box(120, 90, 250, 270, COLORS.paper)}
+    <text x="245" y="270" text-anchor="middle" font-size="130" font-weight="800" fill="${COLORS.ink}" font-family="inherit">Aa</text>
+    <rect x="156" y="304" width="178" height="10" fill="${COLORS.accent}"/>
+    ${box(444, 96, 236, 118, COLORS.paper)}
+    <text x="468" y="146" font-size="22" font-weight="800" fill="${COLORS.ink}" font-family="inherit">DESIGN-</text>
+    <text x="468" y="180" font-size="22" font-weight="800" fill="${COLORS.accent}" font-family="inherit">SYSTEM</text>
     ${row}
-    <path d="M568 340l14 44 10-17 19 6z" fill="${COLORS.ink}" stroke="${COLORS.paper}" stroke-width="2"/>
   `)
 }

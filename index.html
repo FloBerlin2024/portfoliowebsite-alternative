@@ -4,8 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="Florian Matthias — Lehrer für Geografie & Ethik aus Brandenburg. Digitale Bildung, kritisches Denken und eigene Web-Projekte für den Schulalltag.">
-  <meta name="theme-color" content="#2A2A2A">
-  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23FF9019'/%3E%3Ctext x='16' y='23' text-anchor='middle' font-family='sans-serif' font-size='19' font-weight='900' fill='%232A2A2A'%3EF.%3C/text%3E%3C/svg%3E">
+  <meta name="theme-color" content="#0F172A">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%234F46E5'/%3E%3Ctext x='16' y='23' text-anchor='middle' font-family='Arial,sans-serif' font-size='19' font-weight='800' fill='%23FFFFFF'%3EF.%3C/text%3E%3C/svg%3E">
 
   <!-- Open Graph / Twitter -->
   <link rel="canonical" href="https://flomat.uber.space/">
@@ -23,7 +23,7 @@
   <meta name="twitter:description" content="Digitale Bildung, kritisches Denken und eigene Web-Projekte für den Schulalltag — aus Brandenburg.">
   <meta name="twitter:image" content="https://flomat.uber.space/og-image.jpg">
 
-  <title>Florian Matthias — Lehrer für Geografie & Ethik</title>
+  <title>Florian</title>
   <link rel="stylesheet" href="./src/styles/main.css">
   <link rel="alternate" type="application/rss+xml" title="Blog von Florian Matthias" href="/feed.xml">
 
@@ -48,128 +48,197 @@
 
   <a href="#main" class="skip-link">Zum Inhalt springen</a>
 
-  <!-- Navigation (Quelle: scripts/partials.js) -->
-  <!-- @nav -->
+  <!-- Header / Navigation -->
+  <nav id="nav" aria-label="Hauptnavigation">
+    <div class="nav-inner">
+      <a href="./" class="nav-logo">
+        <span class="logo-mark" aria-hidden="true">F.</span>
+        <span class="nav-logo-text label">Florian</span>
+      </a>
+      <div class="nav-links label">
+        <a href="#about"><span class="nav-num">01</span>Über mich</a>
+        <a href="#projects"><span class="nav-num">02</span>Projekte</a>
+        <a href="blog/">Blog</a>
+        <a href="#contact" class="nav-link--cta"><span class="nav-num">03</span>Kontakt</a>
+      </div>
+      <button class="nav-hamburger" aria-label="Menü öffnen" aria-expanded="false" aria-controls="nav-mobile-menu">
+        <span class="nav-hamburger-chevron"></span>
+      </button>
+    </div>
 
-  <main class="page-cards" id="main">
+    <!-- Mobiles Menü: volle Breite direkt unter dem Header -->
+    <div class="nav-mobile-menu" id="nav-mobile-menu">
+      <a href="#about" class="nav-mobile-link label"><span class="nav-num">01</span>Über mich</a>
+      <a href="#projects" class="nav-mobile-link label"><span class="nav-num">02</span>Projekte</a>
+      <a href="#contact" class="nav-mobile-link label"><span class="nav-num">03</span>Kontakt</a>
+      <a href="blog/" class="nav-mobile-link label">Blog</a>
+    </div>
+  </nav>
 
-  <!-- Hero Section -->
-  <div class="hero-card-wrap">
+  <!-- Mobile Backdrop -->
+  <div class="nav-backdrop" id="nav-backdrop"></div>
+
+  <main id="main">
+
+    <!-- Hero -->
     <section id="hero">
-      <div class="hero-inner">
+      <div class="container hero-inner">
         <div class="hero-text">
-          <p class="hero-name">Hi, ich bin Florian.</p>
+          <p class="hero-eyebrow label">Hi, ich bin Florian. Lehrer aus Brandenburg.</p>
           <h1>Ich bin<br><span class="sr-only">Lehrer, Begleiter, Berater, Organisator, KI-Enthusiast und Designer.</span><span class="hero-animate" aria-hidden="true"><span class="hero-animate-track"><span class="hero-animate-word">Lehrer.</span><span class="hero-animate-word">Begleiter.</span><span class="hero-animate-word">Berater.</span><span class="hero-animate-word">Organisator.</span><span class="hero-animate-word">KI-Enthusiast.</span><span class="hero-animate-word">Designer.</span><span class="hero-animate-word">Lehrer.</span></span></span></h1>
-          <p class="hero-desc">Lehrer für Geografie & Ethik aus Brandenburg — mit Leidenschaft für digitale Bildung, kritisches Denken und echte Lernfreude.</p>
+          <p class="hero-desc">Lehrer für Geografie &amp; Ethik aus Brandenburg — mit Leidenschaft für digitale Bildung, kritisches Denken und echte Lernfreude.</p>
           <div class="hero-cta">
-            <a href="#contact" class="btn btn-outline btn-hero-contact">Kontakt aufnehmen</a>
+            <a href="#contact" class="btn btn-primary">Kontakt aufnehmen <svg class="btn-arrow" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M3 10h13M11 4.5l5.5 5.5-5.5 5.5" stroke="currentColor" stroke-width="2.5" stroke-linecap="square"/></svg></a>
+            <a href="#projects" class="btn btn-outline">Projekte ansehen</a>
+          </div>
+          <div class="hero-roles">
+            <p class="label">Lehrer / Begleiter / Berater / Organisator / KI&#8209;Enthusiast / Designer</p>
+            <button type="button" class="hero-pause label" aria-pressed="false">
+              <span class="hero-pause-icon" aria-hidden="true"></span>
+              <span class="hero-pause-text">Animation anhalten</span>
+            </button>
           </div>
         </div>
-        <div class="hero-image">
+        <figure class="panel hero-figure">
+          <div class="panel-bar label"><span>Porträt</span></div>
           <img
             src="./src/assets/images/sketch.webp"
             srcset="./src/assets/images/sketch-480.webp 480w, ./src/assets/images/sketch-700.webp 700w, ./src/assets/images/sketch.webp 1040w"
-            sizes="(min-width: 1200px) 520px, (min-width: 768px) 44vw, 80vw"
-            alt="Florian Matthias"
+            sizes="(min-width: 1280px) 520px, (min-width: 768px) 42vw, 100vw"
+            alt="Gezeichnetes Porträt von Florian Matthias"
             class="hero-photo-img"
             width="1040" height="1040"
             fetchpriority="high"
             draggable="false"
           >
+          <figcaption class="label">Florian Matthias</figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <!-- 01 Schwerpunkte -->
+    <section id="about" class="section">
+      <div class="container">
+        <header class="section-head">
+          <span class="section-num" aria-hidden="true">01</span>
+          <h2>Meine Schwerpunkte</h2>
+        </header>
+        <div class="services-grid">
+          <article class="panel service-card" data-reveal>
+            <div class="panel-bar label"><span>Fach 01 · Geografie</span></div>
+            <div class="panel-body">
+              <h3>Geografie &amp; Erdkunde</h3>
+              <p>Vom lokalen Raum bis zur globalen Vernetzung — ich mache Geografie greifbar, aktuell und relevant für die Lebenswelt meiner Schülerinnen und Schüler.</p>
+              <a href="#contact" class="square-link label">Kontakt aufnehmen</a>
+            </div>
+          </article>
+          <article class="panel service-card" data-reveal>
+            <div class="panel-bar label"><span>Fach 02 · LER</span></div>
+            <div class="panel-body">
+              <h3>Ethik &amp; Philosophie</h3>
+              <p>Kritisches Denken, Wertediskussion und ethische Urteilsbildung — ich begleite junge Menschen beim Finden ihrer eigenen Haltung in einer komplexen Welt.</p>
+              <a href="#contact" class="square-link label">Kontakt aufnehmen</a>
+            </div>
+          </article>
+          <article class="panel service-card" data-reveal>
+            <div class="panel-bar label"><span>Feld 03 · Digital</span></div>
+            <div class="panel-body">
+              <h3>Digitale Bildung</h3>
+              <p>KI, digitale Tools und moderne Lernmethoden im Unterricht — ich bringe Technikbegeisterung in den Klassenraum und mache digitale Kompetenz erfahrbar.</p>
+              <a href="#contact" class="square-link label">Kontakt aufnehmen</a>
+            </div>
+          </article>
         </div>
       </div>
     </section>
-  </div>
 
-  <!-- Service Cards Row -->
-  <div class="section-card-wrap" id="about">
-    <h2 class="sr-only">Meine Schwerpunkte</h2>
-    <div class="services-grid">
-      <div class="service-card service-card--yellow" data-reveal>
-        <img src="src/assets/images/Erde.png" alt="" class="service-icon" loading="lazy" decoding="async" aria-hidden="true">
-        <h3>Geografie & Erdkunde</h3>
-        <p>Vom lokalen Raum bis zur globalen Vernetzung — ich mache Geografie greifbar, aktuell und relevant für die Lebenswelt meiner Schülerinnen und Schüler.</p>
-        <a href="#contact" class="service-link">Kontakt aufnehmen →</a>
-      </div>
-      <div class="service-card service-card--green" data-reveal>
-        <img src="src/assets/images/Philo.png" alt="" class="service-icon" loading="lazy" decoding="async" aria-hidden="true">
-        <h3>Ethik & Philosophie</h3>
-        <p>Kritisches Denken, Wertediskussion und ethische Urteilsbildung — ich begleite junge Menschen beim Finden ihrer eigenen Haltung in einer komplexen Welt.</p>
-        <a href="#contact" class="service-link">Kontakt aufnehmen →</a>
-      </div>
-      <div class="service-card service-card--pink" data-reveal>
-        <img src="src/assets/images/Digital.png" alt="" class="service-icon" loading="lazy" decoding="async" aria-hidden="true">
-        <h3>Digitale Bildung</h3>
-        <p>KI, digitale Tools und moderne Lernmethoden im Unterricht — ich bringe Technikbegeisterung in den Klassenraum und mache digitale Kompetenz erfahrbar.</p>
-        <a href="#contact" class="service-link">Kontakt aufnehmen →</a>
-      </div>
-    </div>
-  </div>
-
-  <!-- Projects -->
-  <div class="section-card-wrap projects-intro" id="projects">
-    <div class="projects-intro-inner" data-reveal>
-      <p class="section-eyebrow">Projekte</p>
-      <h2>Was ich nebenbei baue.</h2>
-      <p class="projects-intro-desc">Kleine Web-Tools, die im Schulalltag entstanden sind — und ein Design, das dabei gleich mit.</p>
-    </div>
-  </div>
-  <div class="section-card-wrap">
-    <div class="featured-projects" id="projects-container">
-      <!-- Projekte werden von projects.js gerendert -->
-    </div>
-  </div>
-
-  <!-- Contact Section -->
-  <div class="section-card-wrap">
-  <section id="contact">
-    <div class="container">
-      <div class="contact-grid" data-reveal>
-        <div class="contact-info">
-          <h2>Schreib mir<br>eine Nachricht.</h2>
-          <p>Ob Austausch mit Kolleginnen und Kollegen, Rückfragen oder Kooperationsideen — ich freue mich über Nachrichten. Ich antworte innerhalb von 2–3 Werktagen.</p>
-          <p class="contact-email-label">Schreib mir</p>
-          <a href="mailto:florian@example.com" class="contact-email-link">florian@example.com</a>
-        </div>
-        <div class="contact-form-wrap">
-          <form id="contact-form">
-            <div class="form-row">
-              <div class="form-group">
-                <label for="name" class="sr-only">Name</label>
-                <input type="text" id="name" name="name" placeholder="Name" required maxlength="100" autocomplete="name">
-              </div>
-              <div class="form-group">
-                <label for="email" class="sr-only">E-Mail</label>
-                <input type="email" id="email" name="email" placeholder="E-Mail" required maxlength="254" autocomplete="email">
-              </div>
-            </div>
-            <div class="form-group">
-              <label for="message" class="sr-only">Nachricht</label>
-              <textarea id="message" name="message" placeholder="Nachricht" required maxlength="2000"></textarea>
-            </div>
-            <!-- Honeypot gegen Spam-Bots: für Menschen unsichtbar, Formspree verwirft Einsendungen mit Inhalt -->
-            <div class="sr-only" aria-hidden="true">
-              <label for="website">Nicht ausfüllen</label>
-              <input type="text" id="website" name="_gotcha" tabindex="-1" autocomplete="off">
-            </div>
-            <div class="form-footer">
-              <button type="submit" class="btn btn-primary form-submit">Nachricht senden</button>
-            </div>
-            <p class="form-privacy">Deine Angaben werden über den Dienst Formspree übermittelt. Mehr dazu in der <a href="/datenschutz.html">Datenschutzerklärung</a>.</p>
-            <div id="form-message" aria-live="polite"></div>
-          </form>
+    <!-- 02 Projekte -->
+    <section id="projects" class="section">
+      <div class="container">
+        <header class="section-head" data-reveal>
+          <span class="section-num" aria-hidden="true">02</span>
+          <h2>Was ich nebenbei baue.</h2>
+        </header>
+        <p class="section-intro">Kleine Web-Tools, die im Schulalltag entstanden sind — und ein Design, das dabei gleich mit.</p>
+        <div class="projects-grid" id="projects-container">
+          <!-- Projekte werden von projects.js gerendert -->
         </div>
       </div>
+    </section>
+
+    <!-- 03 Kontakt -->
+    <section id="contact" class="section">
+      <div class="container">
+        <header class="section-head">
+          <span class="section-num" aria-hidden="true">03</span>
+          <h2>Schreib mir eine Nachricht.</h2>
+        </header>
+        <div class="contact-grid" data-reveal>
+          <div class="contact-info">
+            <p>Ob Austausch mit Kolleginnen und Kollegen, Rückfragen oder Kooperationsideen — ich freue mich über Nachrichten. Ich antworte innerhalb von 2–3 Werktagen.</p>
+            <div class="contact-email">
+              <p class="contact-email-label label">E-Mail</p>
+              <a href="mailto:florian@example.com" class="contact-email-link">florian@example.com</a>
+            </div>
+          </div>
+          <div class="panel contact-panel">
+            <div class="panel-bar label"><span>Formular · Nachricht</span></div>
+            <form id="contact-form" class="panel-body">
+              <p class="form-required">Alle Felder sind Pflichtfelder.</p>
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="name" class="label">Name</label>
+                  <input type="text" id="name" name="name" required maxlength="100" autocomplete="name">
+                </div>
+                <div class="form-group">
+                  <label for="email" class="label">E-Mail</label>
+                  <input type="email" id="email" name="email" required maxlength="254" autocomplete="email">
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="message" class="label">Nachricht</label>
+                <textarea id="message" name="message" required maxlength="2000"></textarea>
+              </div>
+              <!-- Honeypot gegen Spam-Bots: für Menschen unsichtbar, Formspree verwirft Einsendungen mit Inhalt -->
+              <div class="sr-only" aria-hidden="true">
+                <label for="website">Nicht ausfüllen</label>
+                <input type="text" id="website" name="_gotcha" tabindex="-1" autocomplete="off">
+              </div>
+              <div class="form-footer">
+                <button type="submit" class="btn btn-primary form-submit">Nachricht senden</button>
+              </div>
+              <div id="form-message" aria-live="polite"></div>
+              <p class="form-note">Deine Angaben werden nur zur Beantwortung deiner Nachricht verwendet und über den Dienst Formspree übermittelt. Mehr dazu in der <a href="datenschutz.html">Datenschutzerklärung</a>.</p>
+            </form>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Footer -->
+  <footer>
+    <div class="container footer-inner">
+      <a href="./" class="footer-logo">
+        <span class="logo-mark" aria-hidden="true">F.</span>
+        <span class="label">Florian Matthias · Geografie &amp; Ethik</span>
+      </a>
+      <nav class="footer-links label" aria-label="Weitere Seiten">
+        <a href="/blog/">Blog</a>
+        <a href="impressum.html">Impressum</a>
+        <a href="datenschutz.html">Datenschutz</a>
+      </nav>
+      <span class="footer-right label">&copy; 2026 · Brandenburg</span>
     </div>
-  </section>
-  </div>
+  </footer>
 
-  <!-- Footer (Quelle: scripts/partials.js) -->
-  <!-- @footer -->
-
-  </main><!-- /page-cards -->
-
-  <!-- @backtotop -->
+  <!-- Back to Top -->
+  <button class="back-to-top" id="back-to-top" aria-label="Nach oben scrollen">
+    <svg width="18" height="18" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+      <path d="M8 14V3M3 8l5-5 5 5" stroke="currentColor" stroke-width="2.5" stroke-linecap="square"/>
+    </svg>
+  </button>
 
   <script type="module" src="./src/main.js"></script>
 </body>
