@@ -4,3 +4,4 @@ dist/
 *.local
 .playwright-mcp/
 src/assets/images/Mockups/
+/blog/

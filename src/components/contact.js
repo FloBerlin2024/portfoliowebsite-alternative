@@ -12,6 +12,13 @@ export function initContact() {
     const name = form.elements.name.value.trim()
     const email = form.elements.email.value.trim()
     const message = form.elements.message.value.trim()
+    const gotcha = form.elements._gotcha?.value ?? ''
+
+    // Solange Formspree nicht eingerichtet ist: auf E-Mail verweisen statt Fehlversand
+    if (FORMSPREE_ENDPOINT.includes('YOUR_FORM_ID')) {
+      showMessage('Das Formular ist noch nicht freigeschaltet — schreib mir bitte direkt per E-Mail.', 'error', messageDiv)
+      return
+    }
 
     if (!name || !email || !message) {
       showMessage('Bitte fülle alle Felder aus.', 'error', messageDiv)
@@ -26,8 +33,8 @@ export function initContact() {
     try {
       const response = await fetch(FORMSPREE_ENDPOINT, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, email, message })
+        headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+        body: JSON.stringify({ name, email, message, _gotcha: gotcha })
       })
 
       if (response.ok) {

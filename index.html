@@ -25,12 +25,14 @@
 
   <title>Florian</title>
   <link rel="stylesheet" href="./src/styles/main.css">
+  <link rel="alternate" type="application/rss+xml" title="Blog von Florian Matthias" href="/feed.xml">
 
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
     "@type": "Person",
     "name": "Florian Matthias",
+    "url": "https://flomat.uber.space/",
     "jobTitle": "Lehrer für Geografie & Ethik",
     "description": "Lehrer für Geografie & Ethik aus Brandenburg mit Fokus auf digitale Bildung und kritisches Denken.",
     "address": {
@@ -56,6 +58,7 @@
       <div class="nav-links label">
         <a href="#about"><span class="nav-num">01</span>Über mich</a>
         <a href="#projects"><span class="nav-num">02</span>Projekte</a>
+        <a href="blog/">Blog</a>
         <a href="#contact" class="nav-link--cta"><span class="nav-num">03</span>Kontakt</a>
       </div>
       <button class="nav-hamburger" aria-label="Menü öffnen" aria-expanded="false" aria-controls="nav-mobile-menu">
@@ -68,6 +71,7 @@
       <a href="#about" class="nav-mobile-link label"><span class="nav-num">01</span>Über mich</a>
       <a href="#projects" class="nav-mobile-link label"><span class="nav-num">02</span>Projekte</a>
       <a href="#contact" class="nav-mobile-link label"><span class="nav-num">03</span>Kontakt</a>
+      <a href="blog/" class="nav-mobile-link label">Blog</a>
     </div>
   </nav>
 
@@ -98,8 +102,8 @@
         <figure class="panel hero-figure">
           <div class="panel-bar label"><span>Porträt</span></div>
           <img
-            src="./src/assets/images/sketch.png"
-            srcset="./src/assets/images/sketch-480.png 480w, ./src/assets/images/sketch-700.png 700w, ./src/assets/images/sketch.png 1040w"
+            src="./src/assets/images/sketch.webp"
+            srcset="./src/assets/images/sketch-480.webp 480w, ./src/assets/images/sketch-700.webp 700w, ./src/assets/images/sketch.webp 1040w"
             sizes="(min-width: 1280px) 520px, (min-width: 768px) 42vw, 100vw"
             alt="Gezeichnetes Porträt von Florian Matthias"
             class="hero-photo-img"
@@ -195,6 +199,11 @@
                 <label for="message" class="label">Nachricht</label>
                 <textarea id="message" name="message" required maxlength="2000"></textarea>
               </div>
+              <!-- Honeypot gegen Spam-Bots: für Menschen unsichtbar, Formspree verwirft Einsendungen mit Inhalt -->
+              <div class="sr-only" aria-hidden="true">
+                <label for="website">Nicht ausfüllen</label>
+                <input type="text" id="website" name="_gotcha" tabindex="-1" autocomplete="off">
+              </div>
               <div class="form-footer">
                 <button type="submit" class="btn btn-primary form-submit">Nachricht senden</button>
               </div>
@@ -215,7 +224,8 @@
         <span class="logo-mark" aria-hidden="true">F.</span>
         <span class="label">Florian Matthias · Geografie &amp; Ethik</span>
       </a>
-      <nav class="footer-links label" aria-label="Rechtliches">
+      <nav class="footer-links label" aria-label="Weitere Seiten">
+        <a href="/blog/">Blog</a>
         <a href="impressum.html">Impressum</a>
         <a href="datenschutz.html">Datenschutz</a>
       </nav>

@@ -30,7 +30,11 @@ Design: **Swiss Style** (wie der Kurswahlrechner) — Weiß, Tinte, ein Indigo-A
 index.html                  # Startseite, alle Sections (<title>: nur „Florian“)
 impressum.html              # Impressum (§ 5 DDG, § 18 MStV) — eigener Vite-Einstiegspunkt
 datenschutz.html            # Datenschutzerklärung (keine Cookies, Hosting, Formspree, Rechte)
-vite.config.js              # rollupOptions.input: alle drei HTML-Seiten (neue Seiten hier eintragen!)
+content/blog/*.md           # Blogbeiträge als Markdown — Dateiname = URL /blog/<name>/
+blog/                       # AUTOMATISCH erzeugt aus content/blog (gitignored, nie von Hand bearbeiten)
+public/blog-bilder/         # Bilder für Blogbeiträge (Link: /blog-bilder/x.webp)
+scripts/blog.js             # Markdown → HTML-Seiten (Swiss-Markup), RSS-Feed, Sitemap
+vite.config.js              # Plugin `blog` + rollupOptions.input (alle Seiten inkl. Blog; neue Seiten hier eintragen!)
 src/
   main.js                   # App-Init, setzt html.js-Klasse, importiert alle Komponenten
   components/
@@ -47,9 +51,10 @@ src/
     base.css                # Reset, Typography, .container
     layout.css              # Sections (Hero, 01 Schwerpunkte, 02 Projekte, 03 Kontakt, Footer), Reveal
     components.css          # Bausteine (Nav, Buttons, .panel, .section-head, .square-link, Formular, Back-to-top)
+    blog.css                # Blog-Übersicht (Panels) + Beitrag (.prose für Markdown)
   assets/
     fonts/                  # Archivo-woff2 (latin + latin-ext, variabel) + OFL-Lizenz
-    images/                 # Projektbilder + Porträt (sketch.png)
+    images/                 # Projektbilder + Porträt (sketch*.webp)
 ```
 
 ---
@@ -142,17 +147,28 @@ Footer       → volle Breite, Ink
 - Respektiert `prefers-reduced-motion`; Stagger via `--reveal-delay` (Service-Cards)
 
 ### Kontaktformular (`contact.js`)
-- Formspree-Integration → **`YOUR_FORM_ID` ersetzen**
+- Formspree-Integration → **`YOUR_FORM_ID` ersetzen**. Solange der Platzhalter drinsteht, sendet das Formular nicht, sondern verweist auf die E-Mail
+- Honeypot-Feld `_gotcha` (unsichtbar, `sr-only` + `aria-hidden`) gegen Spam-Bots — Formspree verwirft Einsendungen, bei denen es ausgefüllt ist
 - E-Mail in `index.html` → **`florian@example.com` ersetzen**
+
+### Blog (`content/blog/` → `scripts/blog.js`)
+- Ein Beitrag = eine Markdown-Datei mit Frontmatter: `title`, `date` (JJJJ-MM-TT), `description`, `tags` (kommagetrennt), optional `draft: true`
+- `draft: true` erscheint nur im Dev-Server (gelbes „Entwurf“), nie im Build. Dateien mit `_` am Anfang werden ignoriert
+- Der Generator schreibt bei jedem Start/Build `blog/index.html` + `blog/<slug>/index.html` neu (Markup wie `impressum.html`: Header mit „← Startseite“/„← Alle Beiträge“, `.section-head`, `.legal`, gleicher Footer). Dev-Server lädt bei Änderungen an `.md`-Dateien automatisch neu
+- Übersicht: jeder Beitrag ein `.panel` (Balken: Datum · Lesezeit | Tags), ganze Karte klickbar über `h2 a::after`. Beitrag: `.legal.blog-post` + `.prose` (Markdown-Styles in `blog.css`)
+- Build erzeugt zusätzlich `dist/feed.xml` (RSS, letzte 20) und `dist/sitemap.xml`; `robots.txt` verweist auf die Sitemap. `npm run build` warnt, solange in Impressum/Datenschutz gelbe Platzhalter stehen
+- Nav: „Blog“ ohne Nummer vor „03 Kontakt“ (keine Startseiten-Sektion). Footer-Links „Blog · Impressum · Datenschutz“ auf allen Seiten — Footer steht in jeder HTML-Datei **und** in `scripts/blog.js`, Änderungen an beiden Stellen nachziehen
+- Markdown-Parser: `marked` (devDependency, nur beim Build). `<pre>` bekommt `tabindex="0"` (axe: scrollbare Bereiche per Tastatur)
+- Beispiel-Entwurf `content/blog/willkommen.md` enthält die Schreibanleitung — vor dem ersten echten Beitrag löschen oder überschreiben
 
 ### Back-to-top Button
 - Erscheint nach 400px Scroll, 48×48px, eckig, Ink-Fläche, weißer Pfeil, `border: 3px solid #fff` (Kontrast auf dem dunklen Footer), Hover Indigo
 
 ### SEO & Social Sharing
 - Open-Graph- + Twitter-Meta-Tags in `index.html` (`og:title`, `og:image`, …) — `og:image` zeigt auf `/og-image.jpg` (liegt in `public/`, **nicht** in `src/assets/` — Vite verarbeitet `<meta content>`-Pfade nicht, nur `public/` wird 1:1 in den Build kopiert)
-- `og:url` ist bewusst leer — sobald die Seite eine feste Domain hat, hier + als `<link rel="canonical">` eintragen
+- Domain `https://flomat.uber.space/` steht in `og:url`, `og:image`, `<link rel="canonical">`, JSON-LD `url` und `SITE_URL` in `scripts/blog.js` — bei Domainwechsel alle anpassen
 - JSON-LD (`Person`-Schema) im `<head>` für Rich-Snippets
-- `public/robots.txt` erlaubt vollständiges Crawling; kein `sitemap.xml`, solange keine Domain feststeht
+- `public/robots.txt` erlaubt vollständiges Crawling und verweist auf `/sitemap.xml` (wird beim Build erzeugt)
 
 ### Barrierefreiheit
 - Geprüft (Okt. 2026) mit **axe-core 4.10** (WCAG 2.0/2.1/2.2 A+AA + Best Practices) auf allen drei Seiten bei 375 und 1440px: **0 Verstöße**
@@ -177,7 +193,8 @@ Footer       → volle Breite, Ink
 - Falls ein Custom-Cursor zurückkommen soll: Positions-Tracking über ein äußeres `position:fixed`-Element (`transform: translate(x,y)` bei `mousemove`, kein CSS-Transition darauf — sonst hinkt es der Maus hinterher) + Form/Farbe/Animation in einem Kind-Element, das frei transitionieren darf. Für animierte Formen (z. B. Rotation) geht das nur so, **nicht** über natives `cursor: url()` (Cursor-Bilder sind statisch)
 
 ### Responsive Bilder
-- Hero-Porträt (`sketch.png`) und alle Projekt-Mockups (`rechner-*.jpg`, `generator-*.jpg`, `dock-*.jpg`, `lernapp-*.png`) haben `srcset`/`sizes` (Lernapp bis 670px, da das Quell-Mockup nur 1078px breit ist)
+- Hero-Porträt (`sketch*.webp`) und alle Projekt-Mockups (`rechner-*.webp`, `generator-*.webp`, `dock-*.webp`, `lernapp-*.webp`) haben `srcset`/`sizes`
+- **Alle ausgelieferten Bilder sind WebP** (mit PIL erzeugt): Porträt verlustfrei (Strichzeichnung + Transparenz), Mockups `quality=80–85` — ca. ⅔ weniger Bild-Gewicht als die alten JPG/PNG. Neue Bilder ebenfalls als WebP einbinden
 - Bilder in JS-Dateien (z. B. `projects.js`) **müssen** als ES-Modul-Imports eingebunden werden (`import x from '../assets/images/x.jpg'`), nicht als reine String-Pfade — sonst kopiert Vite sie beim Build nicht mit und sie 404en in Produktion
 - Service-Icons (`Erde.png`, `Philo.png`, `Digital.png`) sind seit dem Swiss-Redesign nicht mehr im Markup, die Dateien liegen aber noch in `assets/images/`
 - Letzter Lighthouse-Mobile-Audit (Production-Build via `vite preview`): Performance 92, Accessibility 100, Best Practices 100, SEO 100
@@ -192,7 +209,8 @@ Footer       → volle Breite, Ink
 4. **Formspree** einrichten: `src/components/contact.js` → `YOUR_FORM_ID` ersetzen; in `datenschutz.html` (Abschnitt 4) die Grundlage der US-Übermittlung prüfen und eintragen (DPF-Zertifizierung bzw. Standardvertragsklauseln)
 5. **Projekt-Links** in `src/components/projects.js` eintragen (`link`-Feld), sobald die Projekte online sind
 6. **`og-image.jpg`** (`public/`) zeigt noch den alten Neobrutalism-Look → neu im Swiss Style erstellen
-7. Nach dem Ersetzen: `grep -rn 'class="todo"\|example.com\|YOUR_FORM_ID' *.html src` muss leer sein
+7. **Blog**: Beispiel-Entwurf `content/blog/willkommen.md` durch ersten echten Beitrag ersetzen
+8. Nach dem Ersetzen: `grep -rn 'class="todo"\|example.com\|YOUR_FORM_ID' *.html src` muss leer sein
 
 ---
 
