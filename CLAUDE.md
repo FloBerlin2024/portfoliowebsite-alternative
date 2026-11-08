@@ -134,7 +134,7 @@ Footer       → volle Breite, Ink
 - **Statisch:** Der Hero-Tilt aus `cursorEffects.js` ist deaktiviert (wird in `main.js` nicht mehr aufgerufen, Datei bleibt liegen)
 
 ### Projekte (`projects.js`)
-- Vier Projekte: **TGS Rechner**, **Generatorenwebsite**, **Widgetdock** (Electron-App „cmt" aus `WORKSPACE/Widgetdock`), **Lernapp**
+- Fünf Projekte: **TGS Rechner**, **Generatorenwebsite**, **Widgetdock** (Electron-App „cmt" aus `WORKSPACE/Widgetdock`), **Lernapp**, **Website Haartraum** (Friseursalon, Link https://haartraum-pankow.de/, Bild = Desktop-Screenshot 1440×960 @2x → `haartraum-640/1280/1920.webp`)
 - `createProjectRow()` erzeugt `.panel.project-card`: Balken „Projekt 0N" | `tags.join(' · ')` → `.project-media` (`aspect-ratio: 3/2`, `object-fit: cover`, `border-bottom: --border`) → H3 + Beschreibung (+ optional `.square-link` „Projekt ansehen", wenn `link` gesetzt)
 - **Lernapp = Hochformat-Handy** → `fit: 'contain'` → `.project-media--stage`: `object-fit: contain` auf `--color-subtle`. Quelle: `Mockups/Lernapp.png`, per PIL aufs Gerät zugeschnitten → `lernapp-440/600/732.png`
 - `image`-Feld überschreibt das Inline-SVG-Visual (`visual`). Die SVGs sind nur noch Fallback, gezeichnet in der Swiss-Palette (`COLORS` = ink/muted/paper/subtle/accent, eckig, ohne Schatten)
@@ -193,7 +193,7 @@ Footer       → volle Breite, Ink
 - Falls ein Custom-Cursor zurückkommen soll: Positions-Tracking über ein äußeres `position:fixed`-Element (`transform: translate(x,y)` bei `mousemove`, kein CSS-Transition darauf — sonst hinkt es der Maus hinterher) + Form/Farbe/Animation in einem Kind-Element, das frei transitionieren darf. Für animierte Formen (z. B. Rotation) geht das nur so, **nicht** über natives `cursor: url()` (Cursor-Bilder sind statisch)
 
 ### Responsive Bilder
-- Hero-Porträt (`sketch*.webp`) und alle Projekt-Mockups (`rechner-*.webp`, `generator-*.webp`, `dock-*.webp`, `lernapp-*.webp`) haben `srcset`/`sizes`
+- Hero-Porträt (`sketch*.webp`) und alle Projekt-Mockups (`rechner-*.webp`, `generator-*.webp`, `dock-*.webp`, `lernapp-*.webp`, `haartraum-*.webp`) haben `srcset`/`sizes`
 - **Alle ausgelieferten Bilder sind WebP** (mit PIL erzeugt): Porträt verlustfrei (Strichzeichnung + Transparenz), Mockups `quality=80–85` — ca. ⅔ weniger Bild-Gewicht als die alten JPG/PNG. Neue Bilder ebenfalls als WebP einbinden
 - Bilder in JS-Dateien (z. B. `projects.js`) **müssen** als ES-Modul-Imports eingebunden werden (`import x from '../assets/images/x.jpg'`), nicht als reine String-Pfade — sonst kopiert Vite sie beim Build nicht mit und sie 404en in Produktion
 - Service-Icons (`Erde.png`, `Philo.png`, `Digital.png`) sind seit dem Swiss-Redesign nicht mehr im Markup, die Dateien liegen aber noch in `assets/images/`

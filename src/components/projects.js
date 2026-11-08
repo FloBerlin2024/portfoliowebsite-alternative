@@ -15,6 +15,9 @@ import dock1920 from '../assets/images/dock-1920.webp'
 import lernapp440 from '../assets/images/lernapp-440.webp'
 import lernapp600 from '../assets/images/lernapp-600.webp'
 import lernapp732 from '../assets/images/lernapp-732.webp'
+import haartraum640 from '../assets/images/haartraum-640.webp'
+import haartraum1280 from '../assets/images/haartraum-1280.webp'
+import haartraum1920 from '../assets/images/haartraum-1920.webp'
 
 // Baut srcset/sizes aus vorgenerierten Bildern in aufsteigender Breite.
 function responsiveImage(sources, alt, width, height) {
@@ -71,6 +74,14 @@ const projects = [
     link: '',
     fit: 'contain',
     image: responsiveImage([{ src: lernapp440, w: 440 }, { src: lernapp600, w: 600 }, { src: lernapp732, w: 732 }], 'Smartphone mit der Lernapp: LERNAPP-Kopfzeile, Begrüßungskarte und Fach Erdkunde im gelben Neobrutalism-Stil', 732, 1052),
+    visual: designVisual()
+  },
+  {
+    title: 'Website Haartraum',
+    tags: ['Website', 'Kundenprojekt'],
+    description: 'Website für den Friseursalon Haartraum in Berlin-Pankow: Leistungen, Vorher-nachher-Galerie, Google-Bewertungen und Online-Terminbuchung — klar aufgebaut und für das Smartphone gemacht.',
+    link: 'https://haartraum-pankow.de/',
+    image: responsiveImage([{ src: haartraum640, w: 640 }, { src: haartraum1280, w: 1280 }, { src: haartraum1920, w: 1920 }], 'Startseite der Website Haartraum: Logo „HAARtraum Friseursalon“ über einem Salonfoto, darunter Buttons für Termin, Leistungen und Beratung', 1280, 853),
     visual: designVisual()
   }
 ]
