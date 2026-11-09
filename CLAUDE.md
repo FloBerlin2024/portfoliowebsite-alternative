@@ -106,7 +106,7 @@ Alle Tokens in `src/styles/variables.css`.
 ```
 Header       → weiß, sticky, border-bottom --rule-thick
 Hero         → 2 Spalten ab 768px: Text | Porträt-Panel (Nº 00)
-01 Schwerpunkte (#about)   → 3 Panels, auto-fit minmax(300px)
+01 Schwerpunkte (#about)   → 5 Panels (Geografie, Ethik, Digitale Bildung & KI, Digitale Tools, Webapps für Schule & Verwaltung); auto-fit minmax(300px), ab 1024px 6er-Raster → 3 + 2 Karten
 02 Projekte (#projects)    → Panels, auto-fit minmax(480px)
 03 Kontakt (#contact)      → Text + E-Mail | Formular-Panel
 Footer       → volle Breite, Ink

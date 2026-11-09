@@ -215,6 +215,15 @@ html:not(.js) .hero-pause {
 /* Reveal-Stagger: Karten laufen leicht versetzt ein */
 .services-grid .service-card:nth-child(2) { --reveal-delay: 0.08s; }
 .services-grid .service-card:nth-child(3) { --reveal-delay: 0.16s; }
+.services-grid .service-card:nth-child(4) { --reveal-delay: 0.24s; }
+.services-grid .service-card:nth-child(5) { --reveal-delay: 0.32s; }
+
+/* Desktop: 5 Karten als 3 + 2 in voller Breite (6er-Raster) */
+@media (min-width: 1024px) {
+  .services-grid { grid-template-columns: repeat(6, 1fr); }
+  .services-grid .service-card { grid-column: span 2; }
+  .services-grid .service-card:nth-child(n+4) { grid-column: span 3; }
+}
 
 /* ============================================================
    02 PROJEKTE
