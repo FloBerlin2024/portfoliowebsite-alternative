@@ -111,7 +111,7 @@ function footer(current) {
     <div class="container footer-inner">
       <a href="/" class="footer-logo">
         <span class="logo-mark" aria-hidden="true">F.</span>
-        <span class="label">Florian Matthias · Geografie &amp; Ethik</span>
+        <span class="label">Florian Matthias</span>
       </a>
       <nav class="footer-links label" aria-label="Weitere Seiten">
         <a href="/blog/"${aria('blog')}>Blog</a>
